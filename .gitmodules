@@ -1,0 +1,3 @@
+[submodule "docs/ckb-dao-v2"]
+	path = docs/ckb-dao-v2
+	url = https://github.com/CKBDAO/ckb-dao-v2.git

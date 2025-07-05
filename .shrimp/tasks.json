@@ -1,0 +1,416 @@
+{
+  "tasks": [
+    {
+      "id": "0a9ff095-afb8-491f-bf73-d3c2ac5c2c79",
+      "name": "Interface Adjustments & Refinements",
+      "description": "Implement specific interface changes and fixes based on user instructions to polish the existing v0.dev prototype. Focus on UI/UX improvements, component refinements, navigation flow enhancements, and design consistency updates across all pages including landing page, deployment wizard, and dashboard.",
+      "notes": "This is the foundation task that must be completed first. User will provide specific interface change requirements during implementation.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-07-04T04:46:17.421Z",
+      "updatedAt": "2025-07-04T04:46:17.421Z",
+      "relatedFiles": [
+        {
+          "path": "dapp/app/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Landing page component with hero section and features",
+          "lineStart": 1,
+          "lineEnd": 273
+        },
+        {
+          "path": "dapp/app/deploy/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Multi-step deployment wizard",
+          "lineStart": 1,
+          "lineEnd": 650
+        },
+        {
+          "path": "dapp/app/dashboard/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Main dashboard with staking positions",
+          "lineStart": 1,
+          "lineEnd": 1168
+        },
+        {
+          "path": "dapp/app/globals.css",
+          "type": "TO_MODIFY",
+          "description": "Global styles and design system",
+          "lineStart": 1,
+          "lineEnd": 60
+        },
+        {
+          "path": "dapp/components/ui",
+          "type": "REFERENCE",
+          "description": "Comprehensive UI component library",
+          "lineStart": 1,
+          "lineEnd": 100
+        }
+      ],
+      "implementationGuide": "Review existing pages (app/page.tsx, app/deploy/page.tsx, app/dashboard/page.tsx) and components. Apply user feedback for specific interface improvements. Enhance responsive design patterns, improve form layouts, optimize component spacing and visual hierarchy. Update color schemes and ensure consistent design system usage. Test accessibility compliance and mobile experience optimization. Maintain existing shadcn/ui component library patterns.",
+      "verificationCriteria": "All pages render correctly with improved UI/UX. Responsive design works across devices. Design consistency maintained throughout application. User-provided interface requirements implemented correctly. No regressions in existing functionality.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP) and liquid staking modes, leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development), Stage C (Backend Integration & Real APIs)."
+    },
+    {
+      "id": "2e4022c2-0749-405b-831a-8c4d4343d3f1",
+      "name": "CCC Wallet Integration",
+      "description": "Replace mock wallet connection with real CCC wallet integration using @ckb-ccc/connector-react. Implement wallet provider context, connection states, account management, and error handling. Support multiple CKB wallets including JoyID, Portal, and Neuron through CCC's unified interface.",
+      "notes": "Builds upon existing context provider patterns in app/layout.tsx. Maintains existing component interfaces while adding real wallet functionality.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "0a9ff095-afb8-491f-bf73-d3c2ac5c2c79"
+        }
+      ],
+      "createdAt": "2025-07-04T04:46:17.421Z",
+      "updatedAt": "2025-07-04T04:46:17.421Z",
+      "relatedFiles": [
+        {
+          "path": "dapp/app/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "Root layout with provider context",
+          "lineStart": 1,
+          "lineEnd": 25
+        },
+        {
+          "path": "dapp/package.json",
+          "type": "TO_MODIFY",
+          "description": "Add CCC dependencies",
+          "lineStart": 1,
+          "lineEnd": 70
+        },
+        {
+          "path": "dapp/contexts",
+          "type": "CREATE",
+          "description": "CKB wallet context provider",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "dapp/hooks",
+          "type": "CREATE",
+          "description": "Wallet connection hooks",
+          "lineStart": 1,
+          "lineEnd": 50
+        }
+      ],
+      "implementationGuide": "Install @ckb-ccc/connector-react package. Create CKB wallet provider context in app/layout.tsx. Replace existing 'Connect Wallet' placeholder buttons with real CCC wallet connector components. Implement wallet connection states, account switching, and balance display. Add proper error boundaries for wallet connection failures. Create hooks for wallet state management following existing React context patterns. Ensure TypeScript typing throughout.",
+      "verificationCriteria": "Real wallet connection works with CKB wallets. Wallet state properly managed across application. Connection status accurately displayed. Account switching functions correctly. Error handling graceful for connection failures. No breaking changes to existing component interfaces.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP) and liquid staking modes, leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development), Stage C (Backend Integration & Real APIs)."
+    },
+    {
+      "id": "727dda43-0a76-4160-b5ec-c9fa1aedbe36",
+      "name": "Real CKB Blockchain Integration",
+      "description": "Replace mock data with real CKB blockchain queries using CCC client. Implement CKB node connectivity, live token balance fetching, transaction history retrieval, and real-time blockchain data updates. Maintain existing data structures while connecting to live blockchain.",
+      "notes": "Preserves existing component interfaces and data structures while replacing mock data sources with real blockchain queries.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "2e4022c2-0749-405b-831a-8c4d4343d3f1"
+        }
+      ],
+      "createdAt": "2025-07-04T04:46:17.421Z",
+      "updatedAt": "2025-07-04T04:46:17.421Z",
+      "relatedFiles": [
+        {
+          "path": "dapp/app/dashboard/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Dashboard with mock wallet balances to replace",
+          "lineStart": 41,
+          "lineEnd": 50
+        },
+        {
+          "path": "dapp/lib/ckb-client.ts",
+          "type": "CREATE",
+          "description": "CKB blockchain client setup",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "dapp/lib/data-fetchers.ts",
+          "type": "CREATE",
+          "description": "Blockchain data fetching functions",
+          "lineStart": 1,
+          "lineEnd": 200
+        },
+        {
+          "path": "dapp/types/blockchain.ts",
+          "type": "CREATE",
+          "description": "CKB-specific type definitions",
+          "lineStart": 1,
+          "lineEnd": 100
+        }
+      ],
+      "implementationGuide": "Set up CCC client for CKB node connectivity. Replace mock wallet balances in dashboard with real CKB and UDT token balance queries. Implement transaction history fetching for user accounts. Add real-time data updates using WebSocket connections or polling. Create data transformation layer to maintain existing component interfaces. Implement proper loading states and error handling for blockchain queries. Add retry logic for failed requests.",
+      "verificationCriteria": "Real CKB and UDT token balances displayed correctly. Transaction history accurately retrieved from blockchain. Real-time updates function properly. Loading states and error handling work as expected. No impact on existing UI components or user experience.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP) and liquid staking modes, leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development), Stage C (Backend Integration & Real APIs)."
+    },
+    {
+      "id": "baba7a46-afde-41de-afec-68cf96089404",
+      "name": "Mock Backend API Development",
+      "description": "Create comprehensive mock backend APIs for frontend development using Next.js API routes. Implement mock endpoints for staking programs, reward periods, possession snapshots, and reward calculations. Enable full frontend functionality before smart contract completion.",
+      "notes": "Provides complete backend functionality for frontend development while smart contracts are being developed. Follows existing mock data patterns.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "727dda43-0a76-4160-b5ec-c9fa1aedbe36"
+        }
+      ],
+      "createdAt": "2025-07-04T04:46:17.421Z",
+      "updatedAt": "2025-07-04T04:46:17.421Z",
+      "relatedFiles": [
+        {
+          "path": "dapp/app/api",
+          "type": "CREATE",
+          "description": "Next.js API routes directory",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "dapp/app/api/programs/route.ts",
+          "type": "CREATE",
+          "description": "Staking programs API endpoint",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "dapp/app/api/periods/route.ts",
+          "type": "CREATE",
+          "description": "Reward periods API endpoint",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "dapp/lib/mock-data.ts",
+          "type": "CREATE",
+          "description": "Centralized mock data management",
+          "lineStart": 1,
+          "lineEnd": 200
+        }
+      ],
+      "implementationGuide": "Create Next.js API routes in app/api/ directory. Implement mock endpoints: /api/programs (staking programs), /api/periods (reward periods), /api/snapshots (possession tracking), /api/rewards (reward calculations). Use existing mock data structures from dashboard and extend them with comprehensive CRUD operations. Add proper HTTP status codes, error responses, and data validation. Create mock database layer using JSON files or in-memory storage for development.",
+      "verificationCriteria": "All mock API endpoints respond correctly with proper data structures. CRUD operations work for staking programs and periods. Error handling returns appropriate HTTP status codes. Mock data consistent with existing frontend expectations. API responses support all dashboard and deployment wizard functionality.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP) and liquid staking modes, leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development), Stage C (Backend Integration & Real APIs)."
+    },
+    {
+      "id": "042d39eb-a2a0-4823-96d8-2fc2afb6c901",
+      "name": "Form Integration Enhancement",
+      "description": "Connect deployment wizard forms to real blockchain operations and mock APIs. Implement proper form validation with CKB-specific constraints, transaction preview flows, and confirmation processes. Enhance existing React Hook Form + Zod patterns with blockchain integration.",
+      "notes": "Builds upon existing React Hook Form + Zod patterns. Maintains multi-step wizard structure while adding real blockchain functionality.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "baba7a46-afde-41de-afec-68cf96089404"
+        }
+      ],
+      "createdAt": "2025-07-04T04:46:17.421Z",
+      "updatedAt": "2025-07-04T04:46:17.421Z",
+      "relatedFiles": [
+        {
+          "path": "dapp/app/deploy/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Multi-step deployment wizard with forms",
+          "lineStart": 136,
+          "lineEnd": 650
+        },
+        {
+          "path": "dapp/lib/form-validation.ts",
+          "type": "CREATE",
+          "description": "CKB-specific form validation schemas",
+          "lineStart": 1,
+          "lineEnd": 100
+        },
+        {
+          "path": "dapp/lib/transaction-builder.ts",
+          "type": "CREATE",
+          "description": "Transaction building and preview logic",
+          "lineStart": 1,
+          "lineEnd": 150
+        },
+        {
+          "path": "dapp/components/ui/form.tsx",
+          "type": "REFERENCE",
+          "description": "Existing form component patterns",
+          "lineStart": 1,
+          "lineEnd": 179
+        }
+      ],
+      "implementationGuide": "Enhance existing deployment wizard forms in app/deploy/page.tsx with real blockchain constraints. Add CKB address validation, UDT token address verification, and capacity calculation. Implement transaction preview screens showing estimated costs and effects. Connect form submissions to mock API endpoints. Add proper validation error handling for blockchain-specific requirements. Create confirmation flows with transaction signing integration using CCC.",
+      "verificationCriteria": "Form validation works with CKB-specific constraints. Transaction preview accurately displays costs and effects. Form submissions successfully create mock staking programs. Error handling provides clear user feedback. Multi-step wizard maintains state correctly through blockchain operations.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP) and liquid staking modes, leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development), Stage C (Backend Integration & Real APIs)."
+    },
+    {
+      "id": "65bb6d6e-e28b-477c-8cc7-f2694fcc55c1",
+      "name": "Dashboard Data Management Enhancement",
+      "description": "Connect dashboard components to real blockchain data and mock APIs. Implement real-time staking position monitoring, reward calculation displays, and comprehensive analytics. Replace mock data with live API calls while maintaining existing UI structure.",
+      "notes": "Preserves existing dashboard UI structure and components while connecting to real data sources. Maintains all existing card layouts and table designs.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "042d39eb-a2a0-4823-96d8-2fc2afb6c901"
+        }
+      ],
+      "createdAt": "2025-07-04T04:46:17.421Z",
+      "updatedAt": "2025-07-04T04:46:17.421Z",
+      "relatedFiles": [
+        {
+          "path": "dapp/app/dashboard/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Dashboard with mock staking positions",
+          "lineStart": 40,
+          "lineEnd": 400
+        },
+        {
+          "path": "dapp/app/programs/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Programs listing page",
+          "lineStart": 41,
+          "lineEnd": 800
+        },
+        {
+          "path": "dapp/lib/api-client.ts",
+          "type": "CREATE",
+          "description": "API client for backend communication",
+          "lineStart": 1,
+          "lineEnd": 150
+        },
+        {
+          "path": "dapp/hooks/use-staking-data.ts",
+          "type": "CREATE",
+          "description": "Custom hooks for staking data management",
+          "lineStart": 1,
+          "lineEnd": 100
+        }
+      ],
+      "implementationGuide": "Replace mock data in dashboard components with real API calls to mock backend. Implement real-time updates for staking positions and reward calculations. Add WebSocket connections for live blockchain monitoring. Create data refresh mechanisms and loading states. Enhance existing tables and cards with real data from mock APIs. Implement filtering, sorting, and pagination for staking programs. Add real-time notifications for important events.",
+      "verificationCriteria": "Dashboard displays real data from mock APIs correctly. Real-time updates function for staking positions and rewards. Loading states and error handling work properly. All existing UI components render correctly with real data. Performance remains optimal with live data updates.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP) and liquid staking modes, leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development), Stage C (Backend Integration & Real APIs)."
+    },
+    {
+      "id": "971c09a1-f7f2-42f2-9966-422732715b6d",
+      "name": "Comprehensive Testing & Polish",
+      "description": "Implement comprehensive testing suite for frontend functionality with real wallet connections and mock backend integration. Perform user experience testing, performance optimization, accessibility compliance verification, and cross-browser compatibility testing.",
+      "notes": "Ensures production-ready quality across all implemented features. Focuses on real user scenarios with wallet connections and blockchain interactions.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "65bb6d6e-e28b-477c-8cc7-f2694fcc55c1"
+        }
+      ],
+      "createdAt": "2025-07-04T04:46:17.422Z",
+      "updatedAt": "2025-07-04T04:46:17.422Z",
+      "relatedFiles": [
+        {
+          "path": "dapp/__tests__",
+          "type": "CREATE",
+          "description": "Test suite directory",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "dapp/jest.config.js",
+          "type": "CREATE",
+          "description": "Jest configuration for testing",
+          "lineStart": 1,
+          "lineEnd": 50
+        },
+        {
+          "path": "dapp/playwright.config.ts",
+          "type": "CREATE",
+          "description": "Playwright E2E test configuration",
+          "lineStart": 1,
+          "lineEnd": 50
+        }
+      ],
+      "implementationGuide": "Set up Jest and React Testing Library for component testing. Create E2E tests using Playwright for wallet connection flows and form submissions. Test all user journeys from wallet connection through staking program deployment. Perform accessibility audits using axe-core. Optimize performance with React DevTools Profiler. Test responsive design across devices and browsers. Add error boundary testing and recovery scenarios.",
+      "verificationCriteria": "All components have unit test coverage above 80%. E2E tests pass for critical user journeys. Performance metrics meet optimization targets. Accessibility compliance verified with automated tools. Cross-browser compatibility confirmed. Error handling tested and working correctly.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP) and liquid staking modes, leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development), Stage C (Backend Integration & Real APIs)."
+    },
+    {
+      "id": "2d8c34dd-8377-43da-bd83-a7f1f3b9f3cb",
+      "name": "Production Frontend Deployment",
+      "description": "Deploy polished frontend application with full mock backend integration to production environment. Configure CDN, monitoring, analytics, and create comprehensive user documentation. Prepare for public testing and feedback collection.",
+      "notes": "Delivers production-ready frontend for immediate user testing and feedback while smart contracts are being developed in parallel.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "971c09a1-f7f2-42f2-9966-422732715b6d"
+        }
+      ],
+      "createdAt": "2025-07-04T04:46:17.422Z",
+      "updatedAt": "2025-07-04T04:46:17.422Z",
+      "relatedFiles": [
+        {
+          "path": "dapp/netlify.toml",
+          "type": "CREATE",
+          "description": "Netlify deployment configuration",
+          "lineStart": 1,
+          "lineEnd": 30
+        },
+        {
+          "path": "dapp/.env.production",
+          "type": "CREATE",
+          "description": "Production environment variables",
+          "lineStart": 1,
+          "lineEnd": 20
+        },
+        {
+          "path": "docs/user-guide.md",
+          "type": "CREATE",
+          "description": "User documentation and guides",
+          "lineStart": 1,
+          "lineEnd": 100
+        }
+      ],
+      "implementationGuide": "Configure Netlify deployment with proper build optimization. Set up CDN for global performance. Implement monitoring with error tracking and performance analytics. Create user documentation and getting started guides. Configure environment variables for production. Set up automated deployment pipeline. Add user feedback collection mechanisms and analytics tracking.",
+      "verificationCriteria": "Application successfully deployed to production. CDN properly configured for global access. Monitoring and analytics collecting data correctly. User documentation complete and accessible. Performance metrics meet production standards. Ready for public testing and feedback collection.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP) and liquid staking modes, leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development), Stage C (Backend Integration & Real APIs)."
+    },
+    {
+      "id": "f0ab7da0-cbcc-480a-90b6-f2d6d5015bee",
+      "name": "Phase 1 Completion & Phase 2 Liquid Staking Planning",
+      "description": "After completing Stage A frontend development, plan continuation to Stage B (Smart Contract Development for possession-based rewards) and Stage C (Backend Integration for possession-based rewards) to complete Phase 1 MVP. Then analyze user feedback and create detailed technical specifications for Phase 2 (Liquid Staking with LST Minting Infrastructure) including CKB Time-Lock integration, LST token smart contracts, and continuous pool rewards.",
+      "notes": "This planning task ensures proper completion of Phase 1 MVP (possession-based rewards) across all three stages before transitioning to Phase 2 (liquid staking infrastructure). Corrects the distinction between development stages within Phase 1 and the actual Phase 2 product roadmap.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "2d8c34dd-8377-43da-bd83-a7f1f3b9f3cb"
+        }
+      ],
+      "createdAt": "2025-07-04T04:53:08.787Z",
+      "updatedAt": "2025-07-04T04:53:08.787Z",
+      "relatedFiles": [
+        {
+          "path": "docs/phase1-stage-b-requirements.md",
+          "type": "CREATE",
+          "description": "Stage B smart contract requirements for possession-based rewards",
+          "lineStart": 1,
+          "lineEnd": 200
+        },
+        {
+          "path": "docs/phase1-stage-c-integration.md",
+          "type": "CREATE",
+          "description": "Stage C mock to real API migration strategy",
+          "lineStart": 1,
+          "lineEnd": 150
+        },
+        {
+          "path": "docs/phase2-liquid-staking-specs.md",
+          "type": "CREATE",
+          "description": "Phase 2 liquid staking technical specifications",
+          "lineStart": 1,
+          "lineEnd": 200
+        },
+        {
+          "path": "docs/user-feedback-analysis.md",
+          "type": "CREATE",
+          "description": "User feedback collection and analysis",
+          "lineStart": 1,
+          "lineEnd": 100
+        }
+      ],
+      "implementationGuide": "Collect and analyze user feedback from Stage A frontend deployment. Document Stage B smart contract requirements for possession-based rewards including snapshot systems, period management, and reward distribution. Plan Stage C integration strategy for replacing mock APIs with real CKB cell operations and Netlify Functions. Create Phase 2 technical specifications for liquid staking infrastructure: LST token contracts, CKB time-lock integration, continuous pool rewards, and LST minting/burning mechanisms. Design migration path from possession-based rewards (Phase 1) to liquid staking capabilities (Phase 2).",
+      "verificationCriteria": "User feedback collected and analyzed comprehensively. Stage B possession-based smart contract requirements clearly documented. Stage C API migration strategy properly planned. Phase 2 liquid staking specifications complete with LST token design, CKB time-lock integration, and continuous pool reward mechanisms. Clear roadmap established for completing Phase 1 MVP before Phase 2 expansion.",
+      "analysisResult": "Frontend-First Development of CKB UDT Staking Framework building upon existing v0.dev prototype with Next.js 15 + React 19 + comprehensive shadcn/ui component library. The goal is to deliver a production-ready universal decentralized staking reward distribution platform that supports possession-based rewards (MVP Phase 1) and liquid staking modes (Phase 2), leveraging CCC wallet integration for seamless CKB blockchain connectivity. Development follows 3-stage approach within Phase 1: Stage A (Frontend Refinement & Integration), Stage B (Smart Contract Development for possession-based rewards), Stage C (Backend Integration & Real APIs for possession-based rewards). Phase 2 focuses specifically on liquid staking with LST minting infrastructure."
+    }
+  ]
+}
