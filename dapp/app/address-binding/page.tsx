@@ -51,10 +51,22 @@ const mockAddresses = [
 
 const mockApiKey = "dao_api_key_1234567890abcdef1234567890abcdef12345678"
 
+// Mock data for prototype
+const mockUser = {
+  verifications: {
+    kyc: { verified: true },
+    telegram: { verified: false },
+    did: { verified: false }
+  }
+}
+
 export default function AddressBindingPage() {
   const [showApiKey, setShowApiKey] = useState(false)
   const [bindingStep, setBindingStep] = useState(1)
   const [webAuthnEnabled, setWebAuthnEnabled] = useState(false)
+
+  // Verification requirement: Telegram + (KYC or DID)
+  const canBindAddress = mockUser.verifications.telegram.verified && (mockUser.verifications.kyc.verified || mockUser.verifications.did.verified)
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -91,6 +103,35 @@ export default function AddressBindingPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Verification Requirement Warning */}
+      {!canBindAddress && (
+        <Alert className="bg-orange-50 border-orange-200">
+          <AlertTriangle className="h-5 w-5 text-orange-600" />
+          <AlertDescription>
+            <span className="font-semibold text-orange-800">Address binding requires:</span>
+            <ul className="list-disc ml-6 mt-2 text-orange-700 text-sm">
+              <li>Telegram verification</li>
+              <li>And either KYC <span className="font-semibold">or</span> DID verification</li>
+            </ul>
+            <div className="mt-2">
+              <Button asChild variant="outline" className="mr-2">
+                <a href="/profile?tab=verification">Go to Verification</a>
+              </Button>
+              {!mockUser.verifications.telegram.verified && (
+                <Button asChild variant="default" className="mr-2 bg-blue-600 hover:bg-blue-700 text-white">
+                  <a href="/profile?tab=verification">Verify Telegram</a>
+                </Button>
+              )}
+              {!mockUser.verifications.kyc.verified && !mockUser.verifications.did.verified && (
+                <Button asChild variant="default" className="bg-green-600 hover:bg-green-700 text-white">
+                  <a href="/profile?tab=verification">Verify KYC or DID</a>
+                </Button>
+              )}
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Tabs defaultValue="binding" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
@@ -156,7 +197,7 @@ export default function AddressBindingPage() {
                       Your browser supports WebAuthn. Click below to set up secure authentication.
                     </AlertDescription>
                   </Alert>
-                  <Button onClick={enableWebAuthn} className="bg-[#00d4aa] hover:bg-[#00b894]">
+                  <Button onClick={enableWebAuthn} className="bg-[#00d4aa] hover:bg-[#00b894]" disabled={!canBindAddress}>
                     <Shield className="h-4 w-4 mr-2" />
                     Enable WebAuthn
                   </Button>
@@ -208,6 +249,7 @@ export default function AddressBindingPage() {
                         variant="outline"
                         size="icon"
                         onClick={() => setShowApiKey(!showApiKey)}
+                        disabled={!canBindAddress}
                       >
                         {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -215,6 +257,7 @@ export default function AddressBindingPage() {
                         variant="outline"
                         size="icon"
                         onClick={() => copyToClipboard(mockApiKey)}
+                        disabled={!canBindAddress}
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
@@ -229,11 +272,11 @@ export default function AddressBindingPage() {
                   </Alert>
 
                   <div className="grid gap-4 md:grid-cols-2">
-                    <Button variant="outline">
+                    <Button variant="outline" disabled={!canBindAddress}>
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Regenerate Key
                     </Button>
-                    <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50">
+                    <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50" disabled={!canBindAddress}>
                       <Trash2 className="h-4 w-4 mr-2" />
                       Revoke Key
                     </Button>
@@ -283,7 +326,7 @@ export default function AddressBindingPage() {
                   <p className="text-sm text-gray-600 mb-3">
                     For unsupported wallets, you can manually bind addresses using transaction signatures.
                   </p>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" disabled={!canBindAddress}>
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Manual Binding Guide
                   </Button>
@@ -332,14 +375,14 @@ export default function AddressBindingPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       {!addr.primary && (
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" disabled={!canBindAddress}>
                           Set Primary
                         </Button>
                       )}
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" disabled={!canBindAddress}>
                         <ExternalLink className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                      <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700" disabled={!canBindAddress}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -348,7 +391,7 @@ export default function AddressBindingPage() {
               </div>
 
               <div className="mt-6 pt-4 border-t">
-                <Button className="bg-[#00d4aa] hover:bg-[#00b894]">
+                <Button className="bg-[#00d4aa] hover:bg-[#00b894]" disabled={!canBindAddress}>
                   <Wallet className="h-4 w-4 mr-2" />
                   Add New Address
                 </Button>
