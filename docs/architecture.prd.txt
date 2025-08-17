@@ -1,0 +1,78 @@
+<context>
+# Overview
+The CKB-DAO-Portal v2 is a next-generation decentralized governance platform built on Nervos CKB blockchain. It enables community-driven management through delegated representative voting, transparent proposal management, and comprehensive treasury oversight. The platform is built entirely on Web3 principles with no centralized backend services, addressing critical challenges from the first DAO iteration including poor user experience, low participation rates, complex address binding, and centralized dependencies.
+
+The platform leverages the ckb_deterministic library for robust smart contract development, providing unified transaction recipes, universal cell classification, and Jest-like assertions. The frontend uses Next.js with @ckb-ccc/connector-react for universal wallet integration, deployed on Netlify with serverless functions.
+
+# Core Features
+
+**Smart Contract Architecture**: Five core contracts using ckb_deterministic framework - treasury management with multi-sig and time-locks, on-chain proposal system with voting mechanisms, WebAuthn-based address binding protocol, representative registry with delegation tracking, and UTXO age-weighted voting with Nervos DAO bonuses.
+
+**Frontend Application**: Next.js 14 with TypeScript, visual prototype from v0.dev, @ckb-ccc/connector-react for wallet integration, Shadcn/ui component library, TailwindCSS for responsive design, Progressive Web App capabilities.
+
+**Data Management**: On-chain storage for all governance-critical data using CKB cells, off-chain Neon PostgreSQL for indexed queries and performance optimization, IPFS integration for large documents, automated blockchain indexer with conflict resolution.
+
+**Infrastructure**: Netlify static hosting with CDN, Netlify Functions for serverless API endpoints, Cloudflare Workers for background tasks and synchronization, no centralized backend services maintaining full decentralization.
+
+# User Experience
+
+**Target Users**: CKB token holders seeking easy delegation and voting, representatives requiring transparency tools, grant applicants needing clear proposal processes, ecosystem builders wanting governance insights.
+
+**Key Workflows**: 30-second wallet connection and address binding, intuitive proposal creation with templates, delegated voting with liquid democracy, treasury management with multi-sig security, comprehensive analytics and reporting.
+
+**Design Principles**: Mobile-first responsive design, Progressive Web App for native-like experience, dark/light theme support, multi-language internationalization, contextual help and onboarding.
+</context>
+<PRD>
+
+# Technical Architecture
+
+**Smart Contract Layer**: Built using ckb_deterministic library providing unified transaction recipes, cell classification framework, validation rules with dependency management, and Jest-like assertions. Contracts include dao-treasury-lock for multi-sig treasury management, dao-proposal-type for on-chain proposals, dao-address-binding-type for WebAuthn protocol, dao-representative-type for delegation tracking, and dao-voting-lock for weighted voting.
+
+**Frontend Architecture**: Next.js 14 App Router with server components, TypeScript for type safety throughout, @ckb-ccc/connector-react for universal wallet support, Shadcn/ui components with consistent design system, TailwindCSS for utility-first styling, React Query for server state management.
+
+**Molecule Schemas**: Custom data structures for treasury cells, proposal cells, representative cells, voting records, and delegation mappings. All schemas follow CKB best practices with efficient serialization.
+
+**Transaction Skeletons**: YAML-based transaction recipes for all governance operations including create/update proposals, cast votes, delegate voting power, treasury withdrawals, representative registration, and address binding.
+
+**Infrastructure Components**: Netlify hosting with automatic deployments, serverless functions for API endpoints, Cloudflare Workers for background processing, Neon PostgreSQL for query optimization, IPFS for decentralized storage.
+
+# Development Roadmap
+
+**Phase 1 - Foundation & Setup**: Initialize project structure with contracts/, dapp/, docs/, and schemas/ directories. Set up ckb_deterministic integration for smart contracts. Define Molecule schemas for all cell types. Create base transaction skeletons. Initialize Next.js application with TypeScript. Integrate v0.dev visual prototype.
+
+**Phase 2 - Smart Contract Development**: Implement shared library using ckb_deterministic framework. Create treasury management contract with multi-sig and time-locks. Build proposal system with on-chain voting mechanisms. Develop WebAuthn-based address binding protocol. Implement representative registry with delegation tracking. Create UTXO age-weighted voting system.
+
+**Phase 3 - Frontend Implementation**: Set up wallet integration with @ckb-ccc/connector-react. Build dashboard with key governance metrics. Create proposals page with submission forms. Implement representatives directory with profiles. Develop voting interface with delegation options. Add treasury management interface.
+
+**Phase 4 - Integration & Testing**: Connect frontend to deployed smart contracts. Implement blockchain data synchronization. Set up Netlify deployment pipeline. Create comprehensive integration tests. Optimize performance and caching. Conduct security audits.
+
+**Phase 5 - Enhanced Features**: Add advanced voting mechanisms (ranked-choice, quadratic). Implement liquid democracy features. Create comprehensive analytics dashboard. Add multi-language support. Develop Progressive Web App features. Integrate notification systems.
+
+# Logical Dependency Chain
+
+**Foundation Requirements**: Project structure and build system must be established first. ckb_deterministic library integration is prerequisite for all contracts. Molecule schemas must be defined before contract implementation. Transaction skeletons depend on completed schemas.
+
+**Contract Dependencies**: Shared library with ckb_deterministic must be completed first. Treasury contract is foundation for fund management. Proposal contract depends on voting mechanisms. Address binding enables user authentication. Representative registry requires address binding.
+
+**Frontend Dependencies**: Wallet integration is prerequisite for all user interactions. Dashboard requires connection to blockchain data. Proposal submission depends on smart contract deployment. Voting interface requires completed voting contracts. Analytics depend on data synchronization.
+
+**Integration Order**: Deploy contracts to testnet before frontend integration. Implement data synchronization before UI features. Complete security audits before mainnet deployment. Optimize performance after core features work.
+
+# Risks and Mitigations
+
+**Technical Challenges**: UTXO model complexity mitigated through ckb_deterministic framework and comprehensive testing. WebAuthn integration challenges addressed with fallback authentication methods. Cross-browser wallet compatibility ensured through @ckb-ccc/connector-react.
+
+**Security Risks**: Smart contract vulnerabilities prevented through formal verification and audits. Treasury security enhanced with multi-sig and time-locks. Address binding security using cryptographic proofs and WebAuthn standards.
+
+**Performance Concerns**: Blockchain sync delays mitigated with off-chain caching in Neon PostgreSQL. Large data storage handled through IPFS integration. Global performance optimized with CDN and edge workers.
+
+**Adoption Barriers**: Complex user experience simplified through intuitive UI and 30-second onboarding. Low participation addressed with delegation and liquid democracy. Technical barriers reduced with comprehensive documentation and help.
+
+# Appendix
+
+**Technology Stack**: Nervos CKB blockchain, ckb_deterministic library for contracts, Rust for smart contract development, Next.js 14 with TypeScript, @ckb-ccc/connector-react for wallets, Neon PostgreSQL for indexing, Netlify and Cloudflare for infrastructure.
+
+**Reference Implementations**: Analyzing proven patterns from existing CKB projects, adapting ckb_deterministic framework capabilities, leveraging v0.dev for visual prototyping, following CKB ecosystem best practices.
+
+**Success Metrics**: 30-second address binding process, sub-2 second page load times, 80% token participation rate, 99.9% platform uptime, comprehensive test coverage above 80%.
+</PRD>

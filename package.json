@@ -1,0 +1,27 @@
+{
+  "name": "ckb-dao-portal-v2",
+  "version": "0.1.0",
+  "description": "CKB DAO Portal v2 - Decentralized Governance Platform",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:contracts\" \"npm run dev:dapp\"",
+    "dev:contracts": "cd contracts && cargo watch -x build",
+    "dev:dapp": "cd dapp && npm run dev",
+    "build": "npm run build:contracts && npm run build:dapp",
+    "build:contracts": "cd contracts && cargo build --release",
+    "build:dapp": "cd dapp && npm run build",
+    "test": "npm run test:contracts && npm run test:dapp",
+    "test:contracts": "cd contracts && cargo test",
+    "test:dapp": "cd dapp && npm test",
+    "clean": "rm -rf contracts/target dapp/.next dapp/out",
+    "install:all": "npm install && cd dapp && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckb-dao-portal-v2"
+  },
+  "license": "MIT"
+}

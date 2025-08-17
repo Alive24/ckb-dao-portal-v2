@@ -1,0 +1,48 @@
+[workspace]
+members = [
+    "libs/dao-shared",
+    "contracts/dao-treasury-lock",
+    "contracts/dao-proposal-type", 
+    "contracts/dao-address-binding-type",
+    "contracts/dao-representative-type",
+    "contracts/dao-voting-lock",
+    "tests"
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["CKB DAO Portal v2 Team"]
+license = "MIT"
+repository = "https://github.com/ckb-dao-portal-v2"
+
+[workspace.dependencies]
+# CKB dependencies
+ckb-std = "0.15"
+ckb-types = { version = "0.119", default-features = false }
+
+# ckb_deterministic framework
+ckb_deterministic = { path = "../../ckb_deterministic" }
+
+# Serialization
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
+serde_yaml = { version = "0.9", default-features = false }
+molecule = { version = "0.8", default-features = false }
+
+# Core dependencies
+core = { version = "0.1.0", default-features = false }
+alloc = { version = "0.1.0", default-features = false }
+
+[profile.release]
+# Optimize for small binary size
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
+overflow-checks = true
+
+[profile.dev]
+panic = "abort"
+overflow-checks = true

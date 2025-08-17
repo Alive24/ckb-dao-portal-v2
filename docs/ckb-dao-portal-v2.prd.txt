@@ -1,0 +1,184 @@
+<context>
+# Overview  
+The CKB DAO Portal v2.0 is a next-generation decentralized governance platform that enables community-driven management of the Nervos CKB ecosystem through delegated representative voting, transparent proposal management, and comprehensive treasury oversight. Built entirely on Web3 principles with no centralized backend services, the platform addresses critical challenges from the first DAO iteration including poor user experience, low participation rates, complex address binding, and centralized dependencies.
+
+The platform serves CKB token holders, potential representatives, grant applicants, and ecosystem builders who need an intuitive, transparent, and accessible governance interface. By implementing a delegated representative model combined with direct voting capabilities, the platform maximizes participation while maintaining the technical flexibility required for complex governance decisions.
+
+Key value propositions include: seamless wallet integration with 30-second address binding, mobile-first responsive design, governance analytics, automated treasury management through smart contracts, comprehensive notification systems, and complete transparency through on-chain data storage with performance-optimized off-chain caching.
+
+# Core Features  
+**Delegated Representative System**: Community members can delegate their voting power to trusted representatives while retaining the ability to vote directly on specific proposals. Representatives maintain detailed profiles showcasing their values, experience, voting history, and community endorsements. The system includes representative application workflows, reputation tracking, and delegation management tools.
+
+**Comprehensive Proposal Management**: Multi-type proposal system supporting grant requests, governance rule changes, and community votes. Features include structured proposal templates, milestone-based grant management, voting progress tracking, community discussion threads, and automated compliance checking against DAO rules.
+
+**Treasury & Financial Management**: Decentralized treasury management through smart contracts with multi-signature vault systems, transparent fund allocation tracking, automated milestone payments, and dual-currency support (CKB/USD) with exchange rate handling.
+
+**Advanced Voting Mechanisms**: Supports multiple voting types (binary, approval, ranked-choice) with UTXO age-weighted voting power, Nervos DAO locked token bonuses, anti-Sybil protections, and liquid democracy where users can delegate to different representatives for different proposal types.
+
+**Analytics & Explorer**: Comprehensive governance analytics including participation metrics, voting patterns, treasury utilization, representative performance tracking, and ecosystem growth indicators presented through interactive dashboards and exportable reports.
+
+**Communication & Notifications**: Multi-channel notification system with email, push notifications, and social media integration. Customizable notification preferences, weekly governance digests, representative messaging systems, and emergency communication channels for critical governance events.
+
+# User Experience  
+**Primary User Personas**:
+- **CKB Token Holders**: Range from casual holders to active governance participants seeking easy delegation and voting options
+- **Representatives**: Committed community leaders requiring tools for communication, transparency, and accountability
+- **Grant Applicants**: Projects and individuals seeking ecosystem funding with clear proposal guidance and milestone management
+- **Ecosystem Builders**: Developers and community managers needing governance insights and participation tools
+
+**Key User Flows**:
+1. **Onboarding Flow**: Wallet connection → Address binding (30-second process) → Delegation setup → Notification preferences → First governance action
+2. **Proposal Lifecycle**: Template selection → Proposal drafting → Community feedback → Formal submission → Voting period → Result implementation
+3. **Representative Journey**: Application submission → Community vetting → Profile optimization → Active representation → Performance tracking → Re-election
+4. **Treasury Management**: Proposal approval → Multi-sig validation → Milestone tracking → Automated payments → Transparency reporting
+
+**UI/UX Considerations**:
+- Mobile-first responsive design supporting all devices
+- Progressive Web App (PWA) capabilities for native app-like experience
+- Dark/light theme support
+- Multi-language support for global community engagement
+- Intuitive navigation with contextual help and onboarding guidance
+</context>
+<PRD>
+# Technical Architecture  
+**Frontend Architecture**: Next.js React application with TypeScript, deployed as static site to Netlify CDN. Uses TailwindCSS for responsive styling and Shadcn/ui component library for consistent design system.
+
+**Blockchain Integration**: Direct integration with CKB blockchain through official CKB SDK. Smart contracts handle governance logic, treasury management, and voting mechanisms using CKB's UTXO model. Address binding protocol leverages WebAuthn for secure key generation and wallet-agnostic proposal submission.
+
+**Data Storage Strategy**: 
+- **On-chain Storage**: All governance-critical data (proposals, votes, treasury transactions) stored in CKB cells for immutability and transparency
+- **Off-chain Performance Layer**: Neon PostgreSQL serverless database for indexed data, search functionality, and optimized queries
+- **Synchronization**: Automated sync processes ensure off-chain data matches on-chain state, with periodic validation and conflict resolution
+
+**Smart Contract Components**:
+- **Treasury Vault Lock**: Multi-signature treasury management with time-locked withdrawals and guardian voting
+- **Proposal Management**: On-chain proposal creation, voting, and result execution
+- **Address Binding**: Secure mapping between CKB addresses and DAO accounts using cryptographic proofs
+- **Representative Registry**: On-chain representative profiles and delegation tracking
+
+**Infrastructure Requirements**:
+- **Netlify Hosting**: Static site hosting with serverless functions for API endpoints
+- **Cloudflare Workers**: Background tasks for data synchronization, notification delivery, and periodic maintenance
+- **Neon Database**: Serverless PostgreSQL for performance-critical queries and search indexing
+- **IPFS Integration**: Decentralized storage for large assets
+- **CDN**: Global content delivery for optimal performance across regions
+
+# Development Roadmap  
+**Phase 1 - Foundation & Core Governance (MVP)**
+- Basic Next.js application with wallet connection and address binding
+- Essential smart contracts: treasury management, basic proposal system, representative registry
+- Core pages: Dashboard, Representatives list, Proposals list, basic submission forms
+- Simple voting mechanisms with binary approval/rejection
+- Basic notification system via email
+- Mobile-responsive design implementation
+- Neon database setup with core data models and sync processes
+
+**Phase 2 - Enhanced User Experience**
+- Complete representative profiles with detailed information and social links
+- Advanced proposal templates for different proposal types (grants, rule changes, polls)
+- Voting progress tracking and results display
+- Community discussion system for proposals
+- DAO Explorer with governance analytics and charts
+- Comprehensive notification preferences and communication management
+
+**Phase 3 - Advanced Governance Features**
+- Multiple voting mechanisms (approval voting, ranked-choice, quadratic voting)
+- Liquid democracy with topic-specific delegation options
+- Advanced treasury features: milestone-based payments, multi-currency support
+- Fraud reporting and dispute resolution systems
+- AI-powered DAO rules chatbot and compliance checking
+- Integration with external tools and APIs for enhanced functionality
+- Advanced analytics dashboard with exportable reports and historical data
+
+**Phase 4 - Ecosystem Integration & Scaling**
+- Internationalization with full multi-language support
+- Integration with social media platforms for broader community engagement
+- Advanced notification systems
+
+# Logical Dependency Chain
+**Foundation Layer (Must Complete First)**:
+1. **Smart Contract Development**: Treasury management, basic proposal system, address binding protocol
+2. **Next.js Application Setup**: Core routing, wallet integration, basic UI components
+3. **Database Architecture**: Neon setup, data models, synchronization framework
+4. **Address Binding Implementation**: WebAuthn integration, wallet compatibility testing
+
+**Core Functionality Layer (Build Upon Foundation)**:
+1. **Basic Governance Workflows**: Proposal submission, simple voting, result tracking
+2. **Representative System**: Profile management, delegation mechanisms, basic discovery
+3. **Treasury Integration**: Smart contract interaction, basic fund management
+4. **Essential UI Pages**: Dashboard with key metrics, proposal lists, representative directory
+
+**Enhanced Experience Layer (Iterative Improvements)**:
+1. **Advanced Proposal Management**: Templates, discussion systems, milestone tracking
+2. **Analytics & Reporting**: DAO Explorer, governance metrics, performance dashboards
+3. **Communication Systems**: Comprehensive notifications, representative messaging, community features
+
+**Scaling & Optimization Layer (Continuous Enhancement)**:
+1. **Performance Optimization**: Caching strategies, database optimization, CDN implementation
+2. **Advanced Governance**: Multiple voting types, liquid democracy
+3. **Ecosystem Integration**: APIs, third-party tools
+4. **Community Features**: Social integration, educational resources, onboarding improvements
+
+# Risks and Mitigations  
+**Technical Challenges**:
+- **UTXO Model Complexity**: Mitigate through comprehensive CKB SDK utilization and smart contract testing on Pudge testnet
+- **Data Synchronization**: Implement robust sync mechanisms with conflict resolution and periodic validation
+- **Wallet Compatibility**: Ensure broad wallet support through standardized integration protocols and fallback options
+- **Performance at Scale**: Use indexed databases, caching strategies, and CDN deployment for global performance
+
+**MVP Strategy**: Focus on core governance functionality first - proposal submission, basic voting, representative delegation. Implement simple but functional treasury management. Prioritize user experience over advanced features to drive adoption and gather community feedback.
+
+**Security Considerations**:
+- **Smart Contract Security**: Comprehensive auditing, formal verification, and bug bounty programs
+- **Address Binding Security**: Multi-layered verification using WebAuthn and cryptographic proofs
+- **Data Integrity**: Regular on-chain validation of off-chain data with automated reconciliation
+- **Access Control**: Role-based permissions with multi-signature requirements for critical operations
+
+**Resource Constraints**:
+- **Development Timeline**: Phased approach with clear MVP definition and iterative improvements
+- **Community Adoption**: Extensive community engagement, educational resources, and incentive programs
+- **Maintenance & Support**: Documentation-first approach, community contributor onboarding, and sustainable development practices
+
+**Governance Risks**:
+- **Low Participation**: Addressed through improved UX, delegation systems, and engagement incentives
+- **Representative Centralization**: Mitigated by liquid democracy, representative caps, and transparency requirements
+- **Proposal Quality**: Implemented through screening processes, community feedback, and structured templates
+
+# Appendix  
+**Research Findings**:
+- Analysis of first DAO iteration shows 90% drop in participation due to poor UX
+- Community feedback indicates 30-second address binding as critical adoption factor
+- Representative model reduces decision fatigue while maintaining democratic participation
+- Mobile accessibility essential for global community engagement
+
+**Technical Specifications**:
+- **Molecule Schema**: Custom data structures for proposal and representative information
+- **Address Binding Protocol**: WebAuthn-based secure key generation with wallet-agnostic design
+- **Treasury Vault Lock**: Multi-signature smart contract with time-locked withdrawals and guardian voting
+- **Voting Weight Calculation**: UTXO age-based weighting with Nervos DAO bonus multipliers
+
+**Integration Requirements**:
+- **Wallet Support**: CCC for all
+- **Notification Services**: Email, push notifications, social media APIs
+- **Analytics**: Custom dashboard with exportable data and third-party integration capabilities
+- **Compliance**: DAO rules engine with automated checking and violation reporting
+
+**Success Metrics**:
+- **Participation**: >80% of eligible tokens participating in governance (directly or delegated)
+- **User Experience**: <30 second average time for address binding process
+- **Proposal Quality**: >70% approval rate for well-formatted proposals
+- **Representative Engagement**: >90% voting participation from active representatives
+- **Platform Performance**: <2 second page load times globally, 99.9% uptime
+
+**Community Governance Framework**:
+- **Constitutional Rules**: Core principles requiring supermajority (75%) for changes
+- **Operational Rules**: Day-to-day governance requiring simple majority (51-60%)
+- **Emergency Procedures**: Fast-track processes for critical security or treasury issues
+- **Amendment Process**: Structured approach for platform improvements and feature additions
+
+**Future Considerations**:
+- **Progressive Web App (PWA)**: Native app-like experience with offline capabilities and service workers
+- **Cross-chain Integration**: Capabilities for broader ecosystem governance beyond CKB
+- **Advanced Security Features**: Hardware wallet support, multi-factor authentication
+- **Advanced Notification Systems**: Cross-platform synchronization and enhanced delivery methods
+</PRD> 
