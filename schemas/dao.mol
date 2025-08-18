@@ -1,0 +1,256 @@
+/* Basic Types - Reusing standard CKB types */
+
+// The `UintN` is used to store a `N` bits unsigned integer
+// as a byte array in little endian.
+array Uint8 [byte; 1];
+array Uint16 [byte; 2];
+array Uint32 [byte; 4];
+array Uint64 [byte; 8];
+array Uint128 [byte; 16];
+array Uint256 [byte; 32];
+array Byte32 [byte; 32];
+
+vector Bytes <byte>;
+option BytesOpt (Bytes);
+vector BytesVec <Bytes>;
+vector Byte32Vec <Byte32>;
+vector Uint8Vec <Uint8>;
+vector Uint32Vec <Uint32>;
+vector Uint64Vec <Uint64>;
+vector Uint128Vec <Uint128>;
+vector String <byte>;
+vector StringVec <String>;
+
+/* CKB Chain Types */
+
+option ScriptOpt (Script);
+vector ScriptVec <Script>;
+
+table Script {
+    code_hash:      Byte32,
+    hash_type:      byte,
+    args:           Bytes,
+}
+
+struct OutPoint {
+    tx_hash:        Byte32,
+    index:          Uint32,
+}
+
+/* DAO-specific Types */
+
+option Byte32Opt (Byte32);
+option Uint64Opt (Uint64);
+option Uint128Opt (Uint128);
+option StringOpt (String);
+
+// Treasury Management Structures
+
+table MultiSigConfig {
+    threshold: Uint8,                    // Required number of signatures
+    signers: Byte32Vec,                  // List of authorized signer lock hashes
+    total_signers: Uint8,                // Total number of signers
+}
+
+table TimeLockConfig {
+    lock_period: Uint64,                 // Lock period in blocks
+    unlock_after: Uint64,                // Block number after which funds can be withdrawn
+    emergency_unlock_threshold: Uint8,   // Higher threshold for emergency unlock
+}
+
+table FundAllocation {
+    category: String,                    // Budget category (e.g., "development", "marketing")
+    allocated_amount: Uint128,           // Total allocated amount for this category
+    spent_amount: Uint128,               // Amount already spent
+    remaining_amount: Uint128,           // Remaining budget
+    period_end: Uint64,                 // Block number when this allocation period ends
+}
+
+vector FundAllocationVec <FundAllocation>;
+
+table TreasuryData {
+    multi_sig_config: MultiSigConfig,
+    time_lock_config: TimeLockConfig,
+    fund_allocations: FundAllocationVec,
+    total_balance: Uint128,              // Total treasury balance
+    pending_withdrawals: Uint128,        // Amount locked in pending withdrawals
+    last_updated: Uint64,                // Last update block number
+    guardian_count: Uint8,               // Number of treasury guardians
+    emergency_mode: Uint8,               // 0=normal, 1=emergency
+}
+
+// Proposal Management Structures
+
+table ProposalMetadata {
+    title: String,
+    description: String,                 // Brief on-chain description
+    proposer_lock_hash: Byte32,
+    category: String,                    // "grant", "governance", "treasury", etc.
+    nostr_event_id: StringOpt,          // Reference to detailed discussion on Nostr
+    ipfs_hash: StringOpt,               // Reference to detailed document on IPFS
+    created_at: Uint64,                 // Creation timestamp
+}
+
+table VotingParameters {
+    start_block: Uint64,                // Voting period start
+    end_block: Uint64,                  // Voting period end
+    quorum_threshold: Uint64,           // Minimum participation required (in CKB)
+    approval_threshold: Uint8,          // Percentage required for approval (e.g., 60 = 60%)
+    vote_type: Uint8,                   // 0=binary, 1=multiple-choice, 2=ranked-choice
+}
+
+table ExecutionAction {
+    action_type: Uint8,                 // 0=treasury_transfer, 1=parameter_change, 2=contract_upgrade
+    target_script: ScriptOpt,           // Target contract for execution
+    parameters: BytesVec,               // Action-specific parameters
+    execution_deadline: Uint64,         // Must be executed before this block
+}
+
+table ProposalData {
+    proposal_id: Byte32,                // Unique proposal identifier
+    metadata: ProposalMetadata,
+    voting_parameters: VotingParameters,
+    execution_action: ExecutionAction,
+    status: Uint8,                      // 0=draft, 1=active, 2=passed, 3=rejected, 4=executed, 5=cancelled
+    total_yes_votes: Uint128,           // Total weight of yes votes
+    total_no_votes: Uint128,            // Total weight of no votes
+    total_abstain_votes: Uint128,       // Total weight of abstain votes
+    vote_count: Uint32,                 // Number of unique voters
+    execution_tx_hash: Byte32Opt,       // Transaction hash if executed
+}
+
+// Representative Management Structures
+
+table RepresentativeProfile {
+    name: String,
+    bio: String,                        // Brief on-chain bio
+    contact_info: String,               // Contact information (email, social media)
+    website: StringOpt,
+    nostr_pubkey: StringOpt,           // Nostr public key for updates
+    verified: Uint8,                    // 0=unverified, 1=verified, 2=suspended
+    joined_at: Uint64,                  // Registration timestamp
+}
+
+table DelegationInfo {
+    total_delegated: Uint128,           // Total CKB delegated to this representative
+    delegator_count: Uint32,            // Number of unique delegators
+    delegation_cap: Uint128Opt,         // Optional maximum delegation limit
+    last_delegation_update: Uint64,     // Last delegation change timestamp
+}
+
+table PerformanceMetrics {
+    proposals_voted: Uint32,            // Number of proposals voted on
+    proposals_missed: Uint32,           // Number of proposals not voted on
+    participation_rate: Uint8,          // Percentage participation (0-100)
+    alignment_score: Uint8,             // How well votes align with delegators (0-100)
+    last_active: Uint64,                // Last activity timestamp
+}
+
+table RepresentativeData {
+    representative_id: Byte32,          // Unique representative identifier
+    lock_hash: Byte32,                  // Representative's lock script hash
+    profile: RepresentativeProfile,
+    delegation_info: DelegationInfo,
+    performance_metrics: PerformanceMetrics,
+    status: Uint8,                      // 0=active, 1=inactive, 2=suspended, 3=retired
+    staked_amount: Uint128,             // Amount staked by representative
+    reward_accumulated: Uint128,        // Rewards earned from participation
+}
+
+// Voting and Delegation Structures
+
+table VoteWeight {
+    base_amount: Uint128,               // CKB amount used for voting
+    utxo_age_factor: Uint32,            // Age multiplier (in basis points, 10000 = 1x)
+    nervos_dao_bonus: Uint32,           // DAO deposit bonus (in basis points)
+    final_weight: Uint128,              // Calculated final voting weight
+}
+
+table VoteRecord {
+    proposal_id: Byte32,                // Proposal being voted on
+    voter_lock_hash: Byte32,            // Voter's lock script hash
+    vote_choice: Uint8,                 // 0=no, 1=yes, 2=abstain (or choice index for multi)
+    vote_weight: VoteWeight,
+    timestamp: Uint64,                  // Vote submission timestamp
+    delegate_lock_hash: Byte32Opt,      // If voted through a representative
+    rationale_nostr_event: StringOpt,   // Optional Nostr event with vote rationale
+}
+
+table DelegationRecord {
+    delegator_lock_hash: Byte32,        // Delegator's lock script hash
+    representative_id: Byte32,          // Representative being delegated to
+    amount_delegated: Uint128,          // Amount of voting power delegated
+    delegation_type: Uint8,             // 0=full, 1=partial, 2=topic-specific
+    topics: Uint32Vec,                  // Topic IDs for topic-specific delegation
+    start_block: Uint64,                // Delegation start block
+    end_block: Uint64Opt,              // Optional delegation end block
+    revocable: Uint8,                   // 0=non-revocable, 1=revocable
+}
+
+// Address Binding Structures (WebAuthn)
+
+table WebAuthnCredential {
+    credential_id: Bytes,               // WebAuthn credential ID
+    public_key: Bytes,                  // Public key for verification
+    algorithm: Uint32,                  // Signature algorithm identifier
+    attestation_format: String,         // Attestation format used
+    created_at: Uint64,                 // Creation timestamp
+}
+
+table AddressBindingData {
+    user_lock_hash: Byte32,             // User's CKB address lock hash
+    webauthn_credential: WebAuthnCredential,
+    binding_proof: Bytes,               // Cryptographic proof of binding
+    verified_at: Uint64,                // Verification timestamp
+    status: Uint8,                      // 0=pending, 1=verified, 2=revoked
+    api_key_hash: Byte32Opt,           // Optional API key hash for wallet integration
+}
+
+// Governance Analytics Structures
+
+table GovernanceMetrics {
+    total_proposals: Uint32,            // Total number of proposals
+    active_proposals: Uint32,           // Currently active proposals
+    total_voters: Uint32,               // Unique voters count
+    total_voting_power: Uint128,        // Total CKB participating
+    total_representatives: Uint32,      // Active representatives
+    total_delegated: Uint128,           // Total delegated CKB
+    participation_rate: Uint8,          // Overall participation percentage
+    last_updated: Uint64,               // Last metrics update
+}
+
+// Notification and Communication References
+
+table NotificationConfig {
+    email_hash: Byte32Opt,             // Hashed email for privacy
+    nostr_pubkey: StringOpt,           // Nostr pubkey for notifications
+    telegram_hash: Byte32Opt,          // Hashed telegram ID
+    notification_types: Uint32,         // Bitmask of enabled notification types
+    frequency: Uint8,                   // 0=instant, 1=daily, 2=weekly
+}
+
+// Emergency and Security Structures
+
+table EmergencyAction {
+    action_id: Byte32,
+    action_type: Uint8,                // 0=pause, 1=emergency_withdrawal, 2=contract_freeze
+    initiator: Byte32,                 // Lock hash of emergency action initiator
+    required_signatures: Uint8,         // Higher threshold for emergency
+    collected_signatures: Byte32Vec,    // Collected guardian signatures
+    deadline: Uint64,                   // Action must be completed by this block
+    executed: Uint8,                    // 0=pending, 1=executed, 2=cancelled
+}
+
+// Main DAO Configuration
+
+table DAOConfig {
+    version: Uint32,                    // DAO protocol version
+    name: String,                       // DAO name
+    treasury_lock_hash: Byte32,         // Treasury contract lock hash
+    proposal_type_hash: Byte32,         // Proposal contract type hash
+    voting_lock_hash: Byte32,           // Voting contract lock hash
+    min_proposal_deposit: Uint128,      // Minimum deposit to create proposal
+    proposal_duration: Uint64,          // Default proposal voting period in blocks
+    execution_delay: Uint64,            // Delay between approval and execution
+    guardian_set: Byte32Vec,            // Emergency guardian addresses
+}

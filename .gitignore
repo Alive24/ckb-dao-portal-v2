@@ -42,3 +42,4 @@ contracts/build/
 # tasks/ 
 .claude
 .cursor/rules/taskmaster/dev_workflow.mdc
+packages/ssri-ckbdao/dist/
