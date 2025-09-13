@@ -1,0 +1,68 @@
+{
+  "name": "@ckb-auth/webauthn",
+  "version": "1.0.0",
+  "description": "WebAuthn authentication with CKB blockchain binding using ckb-ccc",
+  "author": "CKB DAO Team",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client/index.js",
+      "types": "./dist/client/index.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server/index.js",
+      "types": "./dist/server/index.d.ts"
+    },
+    "./adapters/netlify": {
+      "import": "./dist/adapters/netlify.js",
+      "types": "./dist/adapters/netlify.d.ts"
+    }
+  },
+  "scripts": {
+    "generate": "mkdir -p src/generated && moleculec --language - --schema-file ../../schemas/dao.mol --format json > src/generated/dao.json && npx ts-node scripts/generate-types.ts",
+    "prebuild": "npm run generate",
+    "build": "rimraf ./dist && tsc",
+    "test": "jest --forceExit",
+    "lint": "eslint ./src",
+    "format": "prettier --write . && eslint --fix ./src"
+  },
+  "dependencies": {
+    "@ckb-ccc/core": "^1.3.1",
+    "@ckb-ccc/ssri": "^0.1.1",
+    "@simplewebauthn/browser": "^13.1.2",
+    "@simplewebauthn/server": "^13.1.2",
+    "@simplewebauthn/types": "^12.0.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "peerDependencies": {
+    "@netlify/functions": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@netlify/functions": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.1.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

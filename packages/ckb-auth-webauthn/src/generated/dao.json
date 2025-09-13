@@ -1,0 +1,806 @@
+{
+  "syntax_version": {
+    "version": 1
+  },
+  "namespace": "dao",
+  "imports": [],
+  "declarations": [
+    {
+      "type": "array",
+      "name": "Uint8",
+      "item": "byte",
+      "item_count": 1
+    },
+    {
+      "type": "array",
+      "name": "Uint16",
+      "item": "byte",
+      "item_count": 2
+    },
+    {
+      "type": "array",
+      "name": "Uint32",
+      "item": "byte",
+      "item_count": 4
+    },
+    {
+      "type": "array",
+      "name": "Uint64",
+      "item": "byte",
+      "item_count": 8
+    },
+    {
+      "type": "array",
+      "name": "Uint128",
+      "item": "byte",
+      "item_count": 16
+    },
+    {
+      "type": "array",
+      "name": "Uint256",
+      "item": "byte",
+      "item_count": 32
+    },
+    {
+      "type": "array",
+      "name": "Byte32",
+      "item": "byte",
+      "item_count": 32
+    },
+    {
+      "type": "fixvec",
+      "name": "Bytes",
+      "item": "byte"
+    },
+    {
+      "type": "option",
+      "name": "BytesOpt",
+      "item": "Bytes"
+    },
+    {
+      "type": "dynvec",
+      "name": "BytesVec",
+      "item": "Bytes"
+    },
+    {
+      "type": "fixvec",
+      "name": "Byte32Vec",
+      "item": "Byte32"
+    },
+    {
+      "type": "fixvec",
+      "name": "Uint8Vec",
+      "item": "Uint8"
+    },
+    {
+      "type": "fixvec",
+      "name": "Uint32Vec",
+      "item": "Uint32"
+    },
+    {
+      "type": "fixvec",
+      "name": "Uint64Vec",
+      "item": "Uint64"
+    },
+    {
+      "type": "fixvec",
+      "name": "Uint128Vec",
+      "item": "Uint128"
+    },
+    {
+      "type": "fixvec",
+      "name": "String",
+      "item": "byte"
+    },
+    {
+      "type": "dynvec",
+      "name": "StringVec",
+      "item": "String"
+    },
+    {
+      "type": "option",
+      "name": "ScriptOpt",
+      "item": "Script"
+    },
+    {
+      "type": "dynvec",
+      "name": "ScriptVec",
+      "item": "Script"
+    },
+    {
+      "type": "table",
+      "name": "Script",
+      "fields": [
+        {
+          "name": "code_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "hash_type",
+          "type": "byte"
+        },
+        {
+          "name": "args",
+          "type": "Bytes"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "OutPoint",
+      "fields": [
+        {
+          "name": "tx_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "index",
+          "type": "Uint32"
+        }
+      ]
+    },
+    {
+      "type": "option",
+      "name": "Byte32Opt",
+      "item": "Byte32"
+    },
+    {
+      "type": "option",
+      "name": "Uint64Opt",
+      "item": "Uint64"
+    },
+    {
+      "type": "option",
+      "name": "Uint128Opt",
+      "item": "Uint128"
+    },
+    {
+      "type": "option",
+      "name": "StringOpt",
+      "item": "String"
+    },
+    {
+      "type": "table",
+      "name": "MultiSigConfig",
+      "fields": [
+        {
+          "name": "threshold",
+          "type": "Uint8"
+        },
+        {
+          "name": "signers",
+          "type": "Byte32Vec"
+        },
+        {
+          "name": "total_signers",
+          "type": "Uint8"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "TimeLockConfig",
+      "fields": [
+        {
+          "name": "lock_period",
+          "type": "Uint64"
+        },
+        {
+          "name": "unlock_after",
+          "type": "Uint64"
+        },
+        {
+          "name": "emergency_unlock_threshold",
+          "type": "Uint8"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "FundAllocation",
+      "fields": [
+        {
+          "name": "category",
+          "type": "String"
+        },
+        {
+          "name": "allocated_amount",
+          "type": "Uint128"
+        },
+        {
+          "name": "spent_amount",
+          "type": "Uint128"
+        },
+        {
+          "name": "remaining_amount",
+          "type": "Uint128"
+        },
+        {
+          "name": "period_end",
+          "type": "Uint64"
+        }
+      ]
+    },
+    {
+      "type": "dynvec",
+      "name": "FundAllocationVec",
+      "item": "FundAllocation"
+    },
+    {
+      "type": "table",
+      "name": "TreasuryData",
+      "fields": [
+        {
+          "name": "multi_sig_config",
+          "type": "MultiSigConfig"
+        },
+        {
+          "name": "time_lock_config",
+          "type": "TimeLockConfig"
+        },
+        {
+          "name": "fund_allocations",
+          "type": "FundAllocationVec"
+        },
+        {
+          "name": "total_balance",
+          "type": "Uint128"
+        },
+        {
+          "name": "pending_withdrawals",
+          "type": "Uint128"
+        },
+        {
+          "name": "last_updated",
+          "type": "Uint64"
+        },
+        {
+          "name": "guardian_count",
+          "type": "Uint8"
+        },
+        {
+          "name": "emergency_mode",
+          "type": "Uint8"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "ProposalMetadata",
+      "fields": [
+        {
+          "name": "title",
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "type": "String"
+        },
+        {
+          "name": "proposer_lock_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "category",
+          "type": "String"
+        },
+        {
+          "name": "nostr_event_id",
+          "type": "StringOpt"
+        },
+        {
+          "name": "ipfs_hash",
+          "type": "StringOpt"
+        },
+        {
+          "name": "created_at",
+          "type": "Uint64"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "VotingParameters",
+      "fields": [
+        {
+          "name": "start_block",
+          "type": "Uint64"
+        },
+        {
+          "name": "end_block",
+          "type": "Uint64"
+        },
+        {
+          "name": "quorum_threshold",
+          "type": "Uint64"
+        },
+        {
+          "name": "approval_threshold",
+          "type": "Uint8"
+        },
+        {
+          "name": "vote_type",
+          "type": "Uint8"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "ExecutionAction",
+      "fields": [
+        {
+          "name": "action_type",
+          "type": "Uint8"
+        },
+        {
+          "name": "target_script",
+          "type": "ScriptOpt"
+        },
+        {
+          "name": "parameters",
+          "type": "BytesVec"
+        },
+        {
+          "name": "execution_deadline",
+          "type": "Uint64"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "ProposalData",
+      "fields": [
+        {
+          "name": "proposal_id",
+          "type": "Byte32"
+        },
+        {
+          "name": "metadata",
+          "type": "ProposalMetadata"
+        },
+        {
+          "name": "voting_parameters",
+          "type": "VotingParameters"
+        },
+        {
+          "name": "execution_action",
+          "type": "ExecutionAction"
+        },
+        {
+          "name": "status",
+          "type": "Uint8"
+        },
+        {
+          "name": "total_yes_votes",
+          "type": "Uint128"
+        },
+        {
+          "name": "total_no_votes",
+          "type": "Uint128"
+        },
+        {
+          "name": "total_abstain_votes",
+          "type": "Uint128"
+        },
+        {
+          "name": "vote_count",
+          "type": "Uint32"
+        },
+        {
+          "name": "execution_tx_hash",
+          "type": "Byte32Opt"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "RepresentativeProfile",
+      "fields": [
+        {
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "name": "bio",
+          "type": "String"
+        },
+        {
+          "name": "contact_info",
+          "type": "String"
+        },
+        {
+          "name": "website",
+          "type": "StringOpt"
+        },
+        {
+          "name": "nostr_pubkey",
+          "type": "StringOpt"
+        },
+        {
+          "name": "verified",
+          "type": "Uint8"
+        },
+        {
+          "name": "joined_at",
+          "type": "Uint64"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "DelegationInfo",
+      "fields": [
+        {
+          "name": "total_delegated",
+          "type": "Uint128"
+        },
+        {
+          "name": "delegator_count",
+          "type": "Uint32"
+        },
+        {
+          "name": "delegation_cap",
+          "type": "Uint128Opt"
+        },
+        {
+          "name": "last_delegation_update",
+          "type": "Uint64"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "PerformanceMetrics",
+      "fields": [
+        {
+          "name": "proposals_voted",
+          "type": "Uint32"
+        },
+        {
+          "name": "proposals_missed",
+          "type": "Uint32"
+        },
+        {
+          "name": "participation_rate",
+          "type": "Uint8"
+        },
+        {
+          "name": "alignment_score",
+          "type": "Uint8"
+        },
+        {
+          "name": "last_active",
+          "type": "Uint64"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "RepresentativeData",
+      "fields": [
+        {
+          "name": "representative_id",
+          "type": "Byte32"
+        },
+        {
+          "name": "lock_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "profile",
+          "type": "RepresentativeProfile"
+        },
+        {
+          "name": "delegation_info",
+          "type": "DelegationInfo"
+        },
+        {
+          "name": "performance_metrics",
+          "type": "PerformanceMetrics"
+        },
+        {
+          "name": "status",
+          "type": "Uint8"
+        },
+        {
+          "name": "staked_amount",
+          "type": "Uint128"
+        },
+        {
+          "name": "reward_accumulated",
+          "type": "Uint128"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "VoteWeight",
+      "fields": [
+        {
+          "name": "base_amount",
+          "type": "Uint128"
+        },
+        {
+          "name": "utxo_age_factor",
+          "type": "Uint32"
+        },
+        {
+          "name": "nervos_dao_bonus",
+          "type": "Uint32"
+        },
+        {
+          "name": "final_weight",
+          "type": "Uint128"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "VoteRecord",
+      "fields": [
+        {
+          "name": "proposal_id",
+          "type": "Byte32"
+        },
+        {
+          "name": "voter_lock_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "vote_choice",
+          "type": "Uint8"
+        },
+        {
+          "name": "vote_weight",
+          "type": "VoteWeight"
+        },
+        {
+          "name": "timestamp",
+          "type": "Uint64"
+        },
+        {
+          "name": "delegate_lock_hash",
+          "type": "Byte32Opt"
+        },
+        {
+          "name": "rationale_nostr_event",
+          "type": "StringOpt"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "DelegationRecord",
+      "fields": [
+        {
+          "name": "delegator_lock_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "representative_id",
+          "type": "Byte32"
+        },
+        {
+          "name": "amount_delegated",
+          "type": "Uint128"
+        },
+        {
+          "name": "delegation_type",
+          "type": "Uint8"
+        },
+        {
+          "name": "topics",
+          "type": "Uint32Vec"
+        },
+        {
+          "name": "start_block",
+          "type": "Uint64"
+        },
+        {
+          "name": "end_block",
+          "type": "Uint64Opt"
+        },
+        {
+          "name": "revocable",
+          "type": "Uint8"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "WebAuthnCredential",
+      "fields": [
+        {
+          "name": "credential_id",
+          "type": "Bytes"
+        },
+        {
+          "name": "public_key",
+          "type": "Bytes"
+        },
+        {
+          "name": "algorithm",
+          "type": "Uint32"
+        },
+        {
+          "name": "attestation_format",
+          "type": "String"
+        },
+        {
+          "name": "created_at",
+          "type": "Uint64"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "AddressBindingData",
+      "fields": [
+        {
+          "name": "user_lock_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "webauthn_credential",
+          "type": "WebAuthnCredential"
+        },
+        {
+          "name": "binding_proof",
+          "type": "Bytes"
+        },
+        {
+          "name": "verified_at",
+          "type": "Uint64"
+        },
+        {
+          "name": "status",
+          "type": "Uint8"
+        },
+        {
+          "name": "api_key_hash",
+          "type": "Byte32Opt"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "GovernanceMetrics",
+      "fields": [
+        {
+          "name": "total_proposals",
+          "type": "Uint32"
+        },
+        {
+          "name": "active_proposals",
+          "type": "Uint32"
+        },
+        {
+          "name": "total_voters",
+          "type": "Uint32"
+        },
+        {
+          "name": "total_voting_power",
+          "type": "Uint128"
+        },
+        {
+          "name": "total_representatives",
+          "type": "Uint32"
+        },
+        {
+          "name": "total_delegated",
+          "type": "Uint128"
+        },
+        {
+          "name": "participation_rate",
+          "type": "Uint8"
+        },
+        {
+          "name": "last_updated",
+          "type": "Uint64"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "NotificationConfig",
+      "fields": [
+        {
+          "name": "email_hash",
+          "type": "Byte32Opt"
+        },
+        {
+          "name": "nostr_pubkey",
+          "type": "StringOpt"
+        },
+        {
+          "name": "telegram_hash",
+          "type": "Byte32Opt"
+        },
+        {
+          "name": "notification_types",
+          "type": "Uint32"
+        },
+        {
+          "name": "frequency",
+          "type": "Uint8"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "EmergencyAction",
+      "fields": [
+        {
+          "name": "action_id",
+          "type": "Byte32"
+        },
+        {
+          "name": "action_type",
+          "type": "Uint8"
+        },
+        {
+          "name": "initiator",
+          "type": "Byte32"
+        },
+        {
+          "name": "required_signatures",
+          "type": "Uint8"
+        },
+        {
+          "name": "collected_signatures",
+          "type": "Byte32Vec"
+        },
+        {
+          "name": "deadline",
+          "type": "Uint64"
+        },
+        {
+          "name": "executed",
+          "type": "Uint8"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "DAOConfig",
+      "fields": [
+        {
+          "name": "version",
+          "type": "Uint32"
+        },
+        {
+          "name": "name",
+          "type": "String"
+        },
+        {
+          "name": "treasury_lock_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "proposal_type_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "voting_lock_hash",
+          "type": "Byte32"
+        },
+        {
+          "name": "min_proposal_deposit",
+          "type": "Uint128"
+        },
+        {
+          "name": "proposal_duration",
+          "type": "Uint64"
+        },
+        {
+          "name": "execution_delay",
+          "type": "Uint64"
+        },
+        {
+          "name": "guardian_set",
+          "type": "Byte32Vec"
+        }
+      ]
+    }
+  ]
+}

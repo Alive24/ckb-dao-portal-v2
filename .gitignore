@@ -43,3 +43,8 @@ contracts/build/
 .claude
 .cursor/rules/taskmaster/dev_workflow.mdc
 packages/ssri-ckbdao/dist/
+
+# Local Netlify folder
+.netlify
+packages/ckb-auth-webauthn/dist/
+.next

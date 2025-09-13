@@ -1,0 +1,8 @@
+[dev]
+  # Development server configuration
+  command = "next dev --port 4000"
+  targetPort = 4000
+  port = 8888
+  publish = "dapp"
+  functionsPort = 9999
+  autoLaunch = false

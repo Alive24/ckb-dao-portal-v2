@@ -24,6 +24,7 @@ import {
   ExternalLink
 } from "lucide-react"
 import { useState } from "react"
+import { WalletConnectButton } from "@/components/wallet/wallet-connect-button"
 
 const pageTitles: Record<string, string> = {
   "/": "Dashboard",
@@ -66,6 +67,9 @@ export function Header() {
       </div>
       
       <div className="flex items-center gap-4">
+        {/* Wallet Connect Button */}
+        <WalletConnectButton />
+        
         {/* Theme Toggle */}
         <Button
           variant="ghost"

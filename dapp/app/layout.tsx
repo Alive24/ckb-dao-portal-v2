@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { WalletProvider } from "@/components/wallet/wallet-provider"
 import { Sidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
 import { Toaster } from "@/components/ui/sonner"
@@ -14,7 +15,11 @@ export const metadata: Metadata = {
   description: "Community-driven decentralized governance platform for the CKB ecosystem",
   keywords: ["CKB", "DAO", "governance", "blockchain", "decentralized"],
   authors: [{ name: "CKB Community" }],
-  viewport: "width=device-width, initial-scale=1",
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({
@@ -31,18 +36,20 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <div className="flex min-h-screen bg-gray-50">
-            <Sidebar />
-            <div className="flex-1 flex flex-col">
-              <Header />
-              <main className="flex-1 main-content">
-                <div className="container max-w-7xl mx-auto px-6 py-8 animate-fade-in">
-                  {children}
-                </div>
-              </main>
+          <WalletProvider>
+            <div className="flex min-h-screen bg-gray-50">
+              <Sidebar />
+              <div className="flex-1 flex flex-col">
+                <Header />
+                <main className="flex-1 main-content">
+                  <div className="container max-w-7xl mx-auto px-6 py-8 animate-fade-in">
+                    {children}
+                  </div>
+                </main>
+              </div>
             </div>
-          </div>
-          <Toaster />
+            <Toaster />
+          </WalletProvider>
         </ThemeProvider>
       </body>
     </html>

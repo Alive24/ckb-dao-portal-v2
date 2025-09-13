@@ -23,6 +23,8 @@ import {
   EyeOff
 } from "lucide-react"
 import { useState } from "react"
+import { BindingFlow } from "@/components/address-binding/binding-flow"
+import { BindingStatus } from "@/components/address-binding/binding-status"
 
 // Mock data for prototype
 const mockAddresses = [
@@ -51,22 +53,16 @@ const mockAddresses = [
 
 const mockApiKey = "dao_api_key_1234567890abcdef1234567890abcdef12345678"
 
-// Mock data for prototype
-const mockUser = {
-  verifications: {
-    kyc: { verified: true },
-    telegram: { verified: false },
-    did: { verified: false }
-  }
-}
+// Verification requirements removed - address binding only needs WebAuthn + wallet signature
 
 export default function AddressBindingPage() {
   const [showApiKey, setShowApiKey] = useState(false)
   const [bindingStep, setBindingStep] = useState(1)
   const [webAuthnEnabled, setWebAuthnEnabled] = useState(false)
+  const [showNewBinding, setShowNewBinding] = useState(false)
+  const [currentWalletAddress, setCurrentWalletAddress] = useState<string | undefined>(undefined)
 
-  // Verification requirement: Telegram + (KYC or DID)
-  const canBindAddress = mockUser.verifications.telegram.verified && (mockUser.verifications.kyc.verified || mockUser.verifications.did.verified)
+  // Address binding is available to all users - no identity verification required
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -104,34 +100,6 @@ export default function AddressBindingPage() {
         </CardContent>
       </Card>
 
-      {/* Verification Requirement Warning */}
-      {!canBindAddress && (
-        <Alert className="bg-orange-50 border-orange-200">
-          <AlertTriangle className="h-5 w-5 text-orange-600" />
-          <AlertDescription>
-            <span className="font-semibold text-orange-800">Address binding requires:</span>
-            <ul className="list-disc ml-6 mt-2 text-orange-700 text-sm">
-              <li>Telegram verification</li>
-              <li>And either KYC <span className="font-semibold">or</span> DID verification</li>
-            </ul>
-            <div className="mt-2">
-              <Button asChild variant="outline" className="mr-2">
-                <a href="/profile?tab=verification">Go to Verification</a>
-              </Button>
-              {!mockUser.verifications.telegram.verified && (
-                <Button asChild variant="default" className="mr-2 bg-blue-600 hover:bg-blue-700 text-white">
-                  <a href="/profile?tab=verification">Verify Telegram</a>
-                </Button>
-              )}
-              {!mockUser.verifications.kyc.verified && !mockUser.verifications.did.verified && (
-                <Button asChild variant="default" className="bg-green-600 hover:bg-green-700 text-white">
-                  <a href="/profile?tab=verification">Verify KYC or DID</a>
-                </Button>
-              )}
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
 
       <Tabs defaultValue="binding" className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
@@ -142,35 +110,61 @@ export default function AddressBindingPage() {
 
         {/* Address Binding Tab */}
         <TabsContent value="binding" className="space-y-6">
-          {/* Process Overview */}
-          <Card className="enhanced-card border-blue-200 bg-blue-50">
-            <CardContent className="p-6">
-              <div className="flex items-start space-x-3">
-                <Info className="h-5 w-5 text-blue-600 mt-0.5" />
-                <div className="space-y-2">
-                  <h3 className="font-medium text-blue-800">How Address Binding Works</h3>
-                  <p className="text-sm text-blue-700">
-                    Address binding links your on-chain CKB addresses to your off-chain DAO identity. 
-                    This allows you to vote using your CKB holdings while maintaining a user-friendly experience.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
-                    <div className="text-center">
-                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">1</div>
-                      <p className="text-xs text-blue-700">Setup WebAuthn Security</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">2</div>
-                      <p className="text-xs text-blue-700">Get API Key</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">3</div>
-                      <p className="text-xs text-blue-700">Connect Wallet</p>
+          {/* Show new binding flow if activated */}
+          {showNewBinding ? (
+            <div className="flex justify-center">
+              <BindingFlow
+                userId="user123" // This would come from user context
+                userName="DAO User" // This would come from user context
+                onComplete={(txHash) => {
+                  console.log('Binding completed:', txHash)
+                  setShowNewBinding(false)
+                }}
+                onCancel={() => setShowNewBinding(false)}
+              />
+            </div>
+          ) : (
+            <>
+              {/* Process Overview */}
+              <Card className="enhanced-card border-blue-200 bg-blue-50">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-3">
+                    <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+                    <div className="space-y-2">
+                      <h3 className="font-medium text-blue-800">How Address Binding Works</h3>
+                      <p className="text-sm text-blue-700">
+                        Address binding links your on-chain CKB addresses to your off-chain DAO identity. 
+                        This allows you to vote using your CKB holdings while maintaining a user-friendly experience.
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+                        <div className="text-center">
+                          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">1</div>
+                          <p className="text-xs text-blue-700">Setup WebAuthn Security</p>
+                        </div>
+                        <div className="text-center">
+                          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">2</div>
+                          <p className="text-xs text-blue-700">Get API Key</p>
+                        </div>
+                        <div className="text-center">
+                          <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold">3</div>
+                          <p className="text-xs text-blue-700">Connect Wallet</p>
+                        </div>
+                      </div>
+                      
+                      {/* Add button to start new binding flow */}
+                      <div className="mt-4 text-center">
+                        <Button 
+                          onClick={() => setShowNewBinding(true)}
+                          className="bg-[#00d4aa] hover:bg-[#00b894]"
+                        >
+                          <Shield className="h-4 w-4 mr-2" />
+                          Start 30-Second Binding
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
 
           {/* Step 1: WebAuthn Setup */}
           <Card className="enhanced-card">
@@ -197,7 +191,7 @@ export default function AddressBindingPage() {
                       Your browser supports WebAuthn. Click below to set up secure authentication.
                     </AlertDescription>
                   </Alert>
-                  <Button onClick={enableWebAuthn} className="bg-[#00d4aa] hover:bg-[#00b894]" disabled={!canBindAddress}>
+                  <Button onClick={enableWebAuthn} className="bg-[#00d4aa] hover:bg-[#00b894]">
                     <Shield className="h-4 w-4 mr-2" />
                     Enable WebAuthn
                   </Button>
@@ -249,7 +243,6 @@ export default function AddressBindingPage() {
                         variant="outline"
                         size="icon"
                         onClick={() => setShowApiKey(!showApiKey)}
-                        disabled={!canBindAddress}
                       >
                         {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
@@ -257,7 +250,6 @@ export default function AddressBindingPage() {
                         variant="outline"
                         size="icon"
                         onClick={() => copyToClipboard(mockApiKey)}
-                        disabled={!canBindAddress}
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
@@ -272,11 +264,11 @@ export default function AddressBindingPage() {
                   </Alert>
 
                   <div className="grid gap-4 md:grid-cols-2">
-                    <Button variant="outline" disabled={!canBindAddress}>
+                    <Button variant="outline">
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Regenerate Key
                     </Button>
-                    <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50" disabled={!canBindAddress}>
+                    <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50">
                       <Trash2 className="h-4 w-4 mr-2" />
                       Revoke Key
                     </Button>
@@ -326,7 +318,7 @@ export default function AddressBindingPage() {
                   <p className="text-sm text-gray-600 mb-3">
                     For unsupported wallets, you can manually bind addresses using transaction signatures.
                   </p>
-                  <Button variant="outline" size="sm" disabled={!canBindAddress}>
+                  <Button variant="outline" size="sm">
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Manual Binding Guide
                   </Button>
@@ -334,10 +326,23 @@ export default function AddressBindingPage() {
               </div>
             </CardContent>
           </Card>
+            </>
+          )}
         </TabsContent>
 
         {/* Manage Addresses Tab */}
         <TabsContent value="manage" className="space-y-6">
+          {/* Add Binding Status Component */}
+          <BindingStatus
+            walletAddress={currentWalletAddress || "ckb1qyqd53x...a2b3c4d5e6"} // Mock address for now
+            onStartBinding={() => {
+              setShowNewBinding(true)
+              // Switch to binding tab
+              const bindingTab = document.querySelector('[value="binding"]') as HTMLButtonElement
+              bindingTab?.click()
+            }}
+          />
+          
           <Card className="enhanced-card">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -375,14 +380,14 @@ export default function AddressBindingPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       {!addr.primary && (
-                        <Button variant="outline" size="sm" disabled={!canBindAddress}>
+                        <Button variant="outline" size="sm">
                           Set Primary
                         </Button>
                       )}
-                      <Button variant="ghost" size="sm" disabled={!canBindAddress}>
+                      <Button variant="ghost" size="sm">
                         <ExternalLink className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700" disabled={!canBindAddress}>
+                      <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -391,7 +396,7 @@ export default function AddressBindingPage() {
               </div>
 
               <div className="mt-6 pt-4 border-t">
-                <Button className="bg-[#00d4aa] hover:bg-[#00b894]" disabled={!canBindAddress}>
+                <Button className="bg-[#00d4aa] hover:bg-[#00b894]">
                   <Wallet className="h-4 w-4 mr-2" />
                   Add New Address
                 </Button>
