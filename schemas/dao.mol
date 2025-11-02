@@ -189,17 +189,9 @@ table DelegationRecord {
 
 // Address Binding Structures (WebAuthn)
 
-table WebAuthnCredential {
-    credential_id: Bytes,               // WebAuthn credential ID
-    public_key: Bytes,                  // Public key for verification
-    algorithm: Uint32,                  // Signature algorithm identifier
-    attestation_format: String,         // Attestation format used
-    created_at: Uint64,                 // Creation timestamp
-}
-
 table AddressBindingData {
     user_lock_hash: Byte32,             // User's CKB address lock hash
-    webauthn_credential: WebAuthnCredential,
+    passkey_data: Bytes,         // VerifiedRegistrationResponse.registrationInfo encoded as JSON
     binding_proof: Bytes,               // Cryptographic proof of binding
     verified_at: Uint64,                // Verification timestamp
     status: Uint8,                      // 0=pending, 1=verified, 2=revoked
@@ -254,3 +246,9 @@ table DAOConfig {
     execution_delay: Uint64,            // Delay between approval and execution
     guardian_set: Byte32Vec,            // Emergency guardian addresses
 }
+
+table ConnectedTypeID {
+    type_id: Byte32,
+    connected_key: Byte32,
+}
+

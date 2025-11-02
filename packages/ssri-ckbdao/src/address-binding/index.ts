@@ -16,7 +16,7 @@ export interface VerifyParams {
 /**
  * AddressBinding trait for managing address binding cells
  * Enables WebAuthn-based secure binding between CKB addresses and DAO accounts
- * 
+ *
  * @public
  * @category AddressBinding
  */
@@ -44,7 +44,7 @@ export class AddressBinding extends ssri.Trait {
   /**
    * Create a new address binding cell
    * This binds a CKB address to a WebAuthn credential for secure DAO operations
-   * 
+   *
    * @param signer - The signer for the transaction
    * @param params - The binding parameters
    * @param tx - Optional existing transaction to build upon
@@ -60,7 +60,7 @@ export class AddressBinding extends ssri.Trait {
     }
 
     const txReq = ccc.Transaction.from(tx ?? {});
-    
+
     // Ensure at least one input for the transaction
     if (txReq.inputs.length === 0) {
       await txReq.completeInputsAtLeastOne(signer);
@@ -68,7 +68,7 @@ export class AddressBinding extends ssri.Trait {
     }
 
     const addressObj = await signer.getRecommendedAddressObj();
-    
+
     // Create the binding data
     const bindingData: dao.AddressBindingDataLike = {
       user_lock_hash: addressObj.script.hash(),
@@ -101,7 +101,7 @@ export class AddressBinding extends ssri.Trait {
         outPoint: this.code,
         depType: "code",
       });
-      
+
       return resTx;
     } else {
       throw new Error("No result from SSRI executor");
@@ -111,7 +111,7 @@ export class AddressBinding extends ssri.Trait {
   /**
    * Verify an address binding
    * Updates the binding status from pending to verified
-   * 
+   *
    * @param signer - The signer for the transaction
    * @param bindingCellOutPoint - The outpoint of the binding cell to verify
    * @param verifyParams - The verification parameters
@@ -139,7 +139,7 @@ export class AddressBinding extends ssri.Trait {
 
     // Decode the current binding data from outputData
     const currentData = dao.AddressBindingData.decode(bindingCell.outputData);
-    
+
     // Update status to verified
     const updatedData: dao.AddressBindingDataLike = {
       user_lock_hash: currentData.user_lock_hash,
@@ -172,7 +172,7 @@ export class AddressBinding extends ssri.Trait {
         outPoint: this.code,
         depType: "code",
       });
-      
+
       return resTx;
     } else {
       throw new Error("No result from SSRI executor");
@@ -182,7 +182,7 @@ export class AddressBinding extends ssri.Trait {
   /**
    * Revoke an address binding
    * Sets the binding status to revoked
-   * 
+   *
    * @param signer - The signer for the transaction
    * @param bindingCellOutPoint - The outpoint of the binding cell to revoke
    * @param tx - Optional existing transaction to build upon
@@ -208,7 +208,7 @@ export class AddressBinding extends ssri.Trait {
 
     // Decode the current binding data from outputData
     const currentData = dao.AddressBindingData.decode(bindingCell.outputData);
-    
+
     // Update status to revoked
     const updatedData: dao.AddressBindingDataLike = {
       user_lock_hash: currentData.user_lock_hash,
@@ -240,7 +240,7 @@ export class AddressBinding extends ssri.Trait {
         outPoint: this.code,
         depType: "code",
       });
-      
+
       return resTx;
     } else {
       throw new Error("No result from SSRI executor");
@@ -249,7 +249,7 @@ export class AddressBinding extends ssri.Trait {
 
   /**
    * Query binding status for an address
-   * 
+   *
    * @param client - The CKB client
    * @param address - The address to check
    * @returns The binding status and data
@@ -277,7 +277,7 @@ export class AddressBinding extends ssri.Trait {
         // Check if the lock script matches the user's address
         if (cell.cellOutput.lock.hash() === lockScript.hash()) {
           const bindingData = dao.AddressBindingData.decode(cell.outputData);
-          
+
           let status: "none" | "pending" | "verified" | "revoked" = "none";
           switch (Number(bindingData.status)) {
             case 0:
@@ -319,7 +319,7 @@ export class AddressBinding extends ssri.Trait {
    */
   buildBindingSkeleton(params: {
     userLockHash: ccc.HexLike;
-    webauthnCredential: dao.WebAuthnCredentialLike;
+    webauthnCredential: ccc.BytesLike;
     capacity?: ccc.FixedPointLike;
   }): {
     inputs: string;
@@ -337,7 +337,7 @@ Input Cell:
   type: null
   data: empty
   capacity: >= ${params.capacity || 200} CKB`,
-      
+
       outputs: `
 Output Cell (Address Binding):
   lock: User's Lock Script
@@ -353,16 +353,16 @@ Output Cell (Address Binding):
     - verified_at: Current timestamp
     - status: 0 (pending)
     - api_key_hash: Optional API key`,
-      
+
       cellDeps: `
 AddressBinding Type Script Cell:
   - Contains the AddressBinding validation logic
   - Verifies WebAuthn signatures
   - Manages binding lifecycle`,
-      
+
       headerDeps: `
 None required for basic binding`,
-      
+
       witnesses: `
 0: WitnessArgs with signature from user's lock script
 1: WebAuthn attestation data (optional)`,

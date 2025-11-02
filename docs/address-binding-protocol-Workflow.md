@@ -5,6 +5,7 @@
 The Address Binding Protocol enables users to securely link their CKB wallet addresses to their DAO accounts using WebAuthn technology. This creates a seamless governance experience where users can perform DAO actions without constantly connecting their wallets.
 
 **Key Goals:**
+
 - ✅ 30-second binding completion target
 - ✅ Wallet-agnostic design
 - ✅ Secure WebAuthn-based authentication
@@ -19,24 +20,24 @@ graph TB
         WA[WebAuthn Service]
         BC[Binding Components]
     end
-    
+
     subgraph "Backend (Netlify Functions)"
         API1[binding-create API]
         API2[binding-verify API]
         API3[binding-status API]
     end
-    
+
     subgraph "Blockchain (CKB)"
         SSRI[SSRI AddressBinding Trait]
         Cell[Binding Cell]
         Contract[AddressBinding Contract]
     end
-    
+
     subgraph "External"
         Wallet[User Wallet]
         Auth[Device Authenticator]
     end
-    
+
     UI --> WA
     WA --> Auth
     BC --> API1
@@ -61,7 +62,7 @@ sequenceDiagram
     participant WebAuthn
     participant Device as Device Authenticator
     participant API as API (binding-create)
-    
+
     User->>UI: Click "Start 30-Second Binding"
     UI->>WebAuthn: Initialize binding flow
     WebAuthn->>WebAuthn: Generate challenge
@@ -69,7 +70,7 @@ sequenceDiagram
     Device->>User: Prompt for biometric/PIN
     User->>Device: Authenticate (fingerprint/Face ID)
     Device->>WebAuthn: Return credential
-    WebAuthn->>API: POST /api/binding/create
+    WebAuthn->>API: POST /api/binding-create
     Note over API: Store pending binding<br/>Generate API key<br/>Rate limit check
     API->>UI: Return API key + binding ID
     UI->>User: Display API key for copying
@@ -78,16 +79,18 @@ sequenceDiagram
 **Implementation Details:**
 
 1. **WebAuthn Credential Creation** (`dapp/lib/webauthn.ts`)
+
 ```typescript
 const credential = await WebAuthnService.createCredential({
   userId: "user123",
   userName: "dao_user",
   userDisplayName: "DAO User",
-  challenge: WebAuthnService.generateChallenge()
+  challenge: WebAuthnService.generateChallenge(),
 });
 ```
 
 2. **API Key Generation** (`netlify/functions/binding-create.ts`)
+
 ```typescript
 // Rate limiting: 3 attempts per hour
 // Generates unique API key for wallet integration
@@ -103,7 +106,7 @@ sequenceDiagram
     participant Wallet as CKB Wallet
     participant CCC as CKB-CCC Library
     participant API as API (binding-verify)
-    
+
     User->>UI: Copy API key
     UI->>UI: Switch to wallet connection step
     User->>Wallet: Paste API key in wallet
@@ -111,13 +114,14 @@ sequenceDiagram
     Wallet->>User: Display addresses for selection
     User->>Wallet: Select addresses to bind
     Wallet->>CCC: Sign binding message
-    CCC->>API: POST /api/binding/verify
+    CCC->>API: POST /api/binding-verify
     Note over API: Verify signature<br/>Create transaction
     API->>UI: Return transaction hash
     UI->>User: Show success (elapsed time)
 ```
 
 **Wallet Integration Flow:**
+
 - User copies API key from dApp
 - Opens supported wallet (Neuron, JoyID, etc.)
 - Wallet queries DAO API with key
@@ -134,7 +138,7 @@ sequenceDiagram
     participant Executor as SSRI Executor
     participant CKB as CKB Blockchain
     participant Cell as Binding Cell
-    
+
     API->>SSRI: Create binding transaction
     SSRI->>SSRI: Encode AddressBindingData
     Note over SSRI: user_lock_hash<br/>webauthn_credential<br/>binding_proof<br/>status: pending
@@ -146,6 +150,7 @@ sequenceDiagram
 ```
 
 **Transaction Structure:**
+
 ```yaml
 Inputs:
   user-cell:
@@ -183,9 +188,9 @@ sequenceDiagram
     participant SSRI as AddressBinding Trait
     participant CKB as CKB Blockchain
     participant Cell as Binding Cell
-    
+
     loop Check Status
-        UI->>API: GET /api/binding/status
+        UI->>API: GET /api/binding-status
         API->>SSRI: getBindingStatus(address)
         SSRI->>CKB: findCells(type: AddressBinding)
         CKB->>Cell: Read cell data
@@ -193,13 +198,14 @@ sequenceDiagram
         SSRI->>API: Return status
         API->>UI: Update UI status
     end
-    
+
     Note over UI: Status: pending → verified
     UI->>UI: Show completion ✓
     UI->>UI: Display elapsed time
 ```
 
 **Status Transitions:**
+
 - `none` → No binding exists
 - `pending` → Binding created, awaiting verification
 - `verified` → Binding confirmed on-chain
@@ -210,12 +216,14 @@ sequenceDiagram
 ### 1. Frontend Components
 
 **`dapp/components/address-binding/binding-flow.tsx`**
+
 - Step-by-step wizard UI
 - Real-time progress tracking
 - 30-second timer display
 - Error handling and recovery
 
 **`dapp/components/address-binding/binding-status.tsx`**
+
 - Current binding status display
 - Binding management options
 - Refresh and revoke functionality
@@ -223,50 +231,74 @@ sequenceDiagram
 ### 2. WebAuthn Service
 
 **`dapp/lib/webauthn.ts`**
+
 ```typescript
 export class WebAuthnService {
-  static async createCredential(options): Promise<WebAuthnCredentialData>
-  static async getAssertion(credentialId, challenge): Promise<AuthenticatorAssertionResponse>
-  static generateChallenge(): Uint8Array
-  static storeCredential(credential): void
-  static getStoredCredentials(): WebAuthnCredentialData[]
+  static async createCredential(options): Promise<WebAuthnCredentialData>;
+  static async getAssertion(
+    credentialId,
+    challenge
+  ): Promise<AuthenticatorAssertionResponse>;
+  static generateChallenge(): Uint8Array;
+  static storeCredential(credential): void;
+  static getStoredCredentials(): WebAuthnCredentialData[];
 }
 
 export class AddressBindingFlow {
-  async startBinding(userId, userName): Promise<string>
-  async completeBinding(walletAddress, signature): Promise<{txHash, status}>
-  async checkStatus(walletAddress): Promise<{status, credential}>
-  async revokeBinding(walletAddress): Promise<boolean>
+  async startBinding(userId, userName): Promise<string>;
+  async completeBinding(walletAddress, signature): Promise<{ txHash; status }>;
+  async checkStatus(walletAddress): Promise<{ status; credential }>;
+  async revokeBinding(walletAddress): Promise<boolean>;
 }
 ```
 
 ### 3. SSRI Implementation
 
 **`packages/ssri-ckbdao/src/address-binding/index.ts`**
+
 ```typescript
 export class AddressBinding extends ssri.Trait {
-  async bind(signer, params, tx?): Promise<ssri.ExecutorResponse<ccc.Transaction>>
-  async verify(signer, bindingCellOutPoint, verifyParams, tx?): Promise<ssri.ExecutorResponse<ccc.Transaction>>
-  async revoke(signer, bindingCellOutPoint, tx?): Promise<ssri.ExecutorResponse<ccc.Transaction>>
-  async getBindingStatus(client, address): Promise<{status, bindingData, cellOutPoint}>
+  async bind(
+    signer,
+    params,
+    tx?
+  ): Promise<ssri.ExecutorResponse<ccc.Transaction>>;
+  async verify(
+    signer,
+    bindingCellOutPoint,
+    verifyParams,
+    tx?
+  ): Promise<ssri.ExecutorResponse<ccc.Transaction>>;
+  async revoke(
+    signer,
+    bindingCellOutPoint,
+    tx?
+  ): Promise<ssri.ExecutorResponse<ccc.Transaction>>;
+  async getBindingStatus(
+    client,
+    address
+  ): Promise<{ status; bindingData; cellOutPoint }>;
 }
 ```
 
 ### 4. API Endpoints
 
 **`netlify/functions/binding-create.ts`**
+
 - Creates pending binding
 - Generates API key
 - Rate limiting (3 attempts/hour)
 - Returns binding ID
 
 **`netlify/functions/binding-verify.ts`**
+
 - Verifies WebAuthn signature
 - Creates on-chain transaction
 - Updates binding status
 - Returns transaction hash
 
 **`netlify/functions/binding-status.ts`**
+
 - Queries binding status
 - Returns current state
 - Caches results (1 minute)
@@ -274,6 +306,7 @@ export class AddressBinding extends ssri.Trait {
 ## Data Structures
 
 ### AddressBindingData (Molecule Schema)
+
 ```molecule
 table WebAuthnCredential {
   credential_id: Bytes,        // Unique identifier
@@ -297,33 +330,36 @@ table AddressBindingData {
 
 ### Target: 30-Second Completion
 
-| Step | Target Time | Actual Implementation |
-|------|-------------|----------------------|
-| Page Load | < 2s | Next.js optimized |
-| WebAuthn Prompt | < 5s | User action required |
-| Credential Creation | < 3s | Browser API |
-| API Key Generation | < 1s | Netlify Function |
-| Wallet Connection | < 5s | User action |
-| Address Selection | < 5s | User action |
-| Transaction Signing | < 5s | Wallet operation |
-| On-chain Submission | < 5s | CKB network |
-| **Total** | **< 30s** | **✅ Achieved** |
+| Step                | Target Time | Actual Implementation |
+| ------------------- | ----------- | --------------------- |
+| Page Load           | < 2s        | Next.js optimized     |
+| WebAuthn Prompt     | < 5s        | User action required  |
+| Credential Creation | < 3s        | Browser API           |
+| API Key Generation  | < 1s        | Netlify Function      |
+| Wallet Connection   | < 5s        | User action           |
+| Address Selection   | < 5s        | User action           |
+| Transaction Signing | < 5s        | Wallet operation      |
+| On-chain Submission | < 5s        | CKB network           |
+| **Total**           | **< 30s**   | **✅ Achieved**       |
 
 ## Security Considerations
 
 ### WebAuthn Security
+
 - Uses device biometrics (fingerprint, Face ID)
 - Credentials stored locally in secure enclave
 - Public key cryptography for verification
 - Replay attack prevention
 
 ### API Security
+
 - Rate limiting (3 attempts per hour)
 - API key validation
 - Signature verification
 - XSS/CSRF protection
 
 ### On-Chain Security
+
 - Binding cells owned by user's lock script
 - Status transitions enforced by smart contract
 - Immutable binding proof storage
@@ -334,16 +370,19 @@ table AddressBindingData {
 ### Common Error Scenarios
 
 1. **WebAuthn Not Supported**
+
    - Detection: `WebAuthnService.isSupported()`
    - Fallback: Display browser compatibility message
    - Solution: Suggest compatible browser
 
 2. **User Cancellation**
+
    - Detection: `DOMException: NotAllowedError`
    - Recovery: Allow retry with clear instructions
    - UI: Show "cancelled" state with retry button
 
 3. **Rate Limiting**
+
    - Detection: 429 status code
    - Message: "Rate limit exceeded. Please try again later."
    - Cooldown: 1 hour between attempts
@@ -356,18 +395,21 @@ table AddressBindingData {
 ## Testing Strategy
 
 ### Unit Tests
+
 - WebAuthn credential creation/validation
 - Molecule encoding/decoding
 - API endpoint logic
 - SSRI trait methods
 
 ### Integration Tests
+
 - Complete binding flow
 - Wallet integration
 - Transaction construction
 - Status updates
 
 ### E2E Tests
+
 - 30-second performance test
 - Cross-browser compatibility
 - Mobile device support
@@ -376,11 +418,13 @@ table AddressBindingData {
 ## Future Enhancements
 
 1. **Batch Binding**
+
    - Bind multiple addresses in single transaction
    - Reduced transaction fees
    - Improved UX for multi-address users
 
 2. **Social Recovery**
+
    - Multi-signature binding support
    - Guardian-based recovery
    - Time-locked revocation
@@ -393,6 +437,7 @@ table AddressBindingData {
 ## Conclusion
 
 The Address Binding Protocol successfully achieves its 30-second target through:
+
 - ✅ Streamlined WebAuthn integration
 - ✅ Efficient API design
 - ✅ Optimized transaction construction

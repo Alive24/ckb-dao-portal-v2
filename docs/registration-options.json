@@ -1,0 +1,38 @@
+{
+  "success": true,
+  "options": {
+    "challenge": "svPCTR_B4nb-0FdHVIFJ_67_kiLIcRg7R_zwexDi7K0",
+    "rp": {
+      "name": "CKB DAO Portal",
+      "id": "localhost"
+    },
+    "user": {
+      "id": "dXNlcjEyMw",
+      "name": "DAO User",
+      "displayName": "DAO User"
+    },
+    "pubKeyCredParams": [
+      {
+        "alg": -7,
+        "type": "public-key"
+      },
+      {
+        "alg": -257,
+        "type": "public-key"
+      }
+    ],
+    "timeout": 60000,
+    "attestation": "none",
+    "excludeCredentials": [],
+    "authenticatorSelection": {
+      "residentKey": "preferred",
+      "userVerification": "preferred",
+      "authenticatorAttachment": "platform",
+      "requireResidentKey": false
+    },
+    "extensions": {
+      "credProps": true
+    }
+  },
+  "challenge": "svPCTR_B4nb-0FdHVIFJ_67_kiLIcRg7R_zwexDi7K0"
+}

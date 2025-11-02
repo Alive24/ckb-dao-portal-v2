@@ -8,7 +8,7 @@ import {
   startAuthentication,
   browserSupportsWebAuthn,
   browserSupportsWebAuthnAutofill,
-} from '@simplewebauthn/browser';
+} from "@simplewebauthn/browser";
 
 // Types for WebAuthn responses
 export type RegistrationResponseJSON = any;
@@ -23,7 +23,6 @@ export interface WebAuthnCredentialData {
 }
 
 export class WebAuthnClient {
-
   /**
    * Check if WebAuthn is supported in the current browser
    */
@@ -50,16 +49,20 @@ export class WebAuthnClient {
     challenge: string;
   }> {
     if (!this.isSupported()) {
-      throw new Error('WebAuthn is not supported in this browser');
+      throw new Error("WebAuthn is not supported in this browser");
     }
 
     // Get registration options from server
-    console.log('Requesting registration options for:', { userId, userName, userDisplayName });
-    
-    const response = await fetch('/api/binding/registration-options', {
-      method: 'POST',
+    console.log("Requesting registration options for:", {
+      userId,
+      userName,
+      userDisplayName,
+    });
+
+    const response = await fetch("/api/binding-registration-options", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         userId,
@@ -68,21 +71,23 @@ export class WebAuthnClient {
       }),
     });
 
-    console.log('Registration options response status:', response.status);
+    console.log("Registration options response status:", response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Registration options error:', errorText);
-      throw new Error(`Failed to get registration options: ${response.status} ${errorText}`);
+      console.error("Registration options error:", errorText);
+      throw new Error(
+        `Failed to get registration options: ${response.status} ${errorText}`
+      );
     }
 
     const responseData = await response.json();
-    console.log('Registration options received:', responseData);
-    
+    console.log("Registration options received:", responseData);
+
     const { options, challenge } = responseData;
 
     // Start the registration process
-    console.log('Starting WebAuthn registration with options:', options);
+    console.log("Starting WebAuthn registration with options:", options);
     const registration = await startRegistration(options);
 
     return {
@@ -103,10 +108,10 @@ export class WebAuthnClient {
     bindingToken?: string;
     credentialId?: string;
   }> {
-    const response = await fetch('/api/binding/registration-verification', {
-      method: 'POST',
+    const response = await fetch("/api/binding-registration-verification", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         userId,
@@ -116,7 +121,7 @@ export class WebAuthnClient {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to verify registration');
+      throw new Error("Failed to verify registration");
     }
 
     return await response.json();
@@ -125,21 +130,19 @@ export class WebAuthnClient {
   /**
    * Start authentication flow
    */
-  static async startAuthentication(
-    userId: string
-  ): Promise<{
+  static async startAuthentication(userId: string): Promise<{
     authentication: AuthenticationResponseJSON;
     challenge: string;
   }> {
     if (!this.isSupported()) {
-      throw new Error('WebAuthn is not supported in this browser');
+      throw new Error("WebAuthn is not supported in this browser");
     }
 
     // Get authentication options from server
-    const response = await fetch('/api/binding/authentication-options', {
-      method: 'POST',
+    const response = await fetch("/api/binding-authentication-options", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         userId,
@@ -147,7 +150,7 @@ export class WebAuthnClient {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to get authentication options');
+      throw new Error("Failed to get authentication options");
     }
 
     const { options, challenge } = await response.json();
@@ -171,10 +174,10 @@ export class WebAuthnClient {
   ): Promise<{
     verified: boolean;
   }> {
-    const response = await fetch('/api/binding/authentication-verification', {
-      method: 'POST',
+    const response = await fetch("/api/binding-authentication-verification", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         authentication,
@@ -184,7 +187,7 @@ export class WebAuthnClient {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to verify authentication');
+      throw new Error("Failed to verify authentication");
     }
 
     return await response.json();
@@ -194,17 +197,20 @@ export class WebAuthnClient {
    * Store credential in local storage for caching
    */
   static storeCredential(credential: WebAuthnCredentialData): void {
-    const stored = localStorage.getItem('ckb_dao_webauthn_credentials');
+    const stored = localStorage.getItem("ckb_dao_webauthn_credentials");
     const credentials = stored ? JSON.parse(stored) : [];
     credentials.push(credential);
-    localStorage.setItem('ckb_dao_webauthn_credentials', JSON.stringify(credentials));
+    localStorage.setItem(
+      "ckb_dao_webauthn_credentials",
+      JSON.stringify(credentials)
+    );
   }
 
   /**
    * Retrieve stored credentials from local storage
    */
   static getStoredCredentials(): WebAuthnCredentialData[] {
-    const stored = localStorage.getItem('ckb_dao_webauthn_credentials');
+    const stored = localStorage.getItem("ckb_dao_webauthn_credentials");
     return stored ? JSON.parse(stored) : [];
   }
 
@@ -212,7 +218,7 @@ export class WebAuthnClient {
    * Clear stored credentials
    */
   static clearStoredCredentials(): void {
-    localStorage.removeItem('ckb_dao_webauthn_credentials');
+    localStorage.removeItem("ckb_dao_webauthn_credentials");
   }
 }
 
@@ -234,7 +240,6 @@ export class AddressBindingFlow {
       userName
     );
 
-
     // Step 2: Verify registration with server
     const verificationResult = await WebAuthnClient.verifyRegistration(
       registration,
@@ -243,18 +248,18 @@ export class AddressBindingFlow {
     );
 
     if (!verificationResult.verified) {
-      throw new Error('Registration verification failed');
+      throw new Error("Registration verification failed");
     }
 
-    this.bindingToken = verificationResult.bindingToken || '';
-    this.credentialId = verificationResult.credentialId || '';
+    this.bindingToken = verificationResult.bindingToken || "";
+    this.credentialId = verificationResult.credentialId || "";
 
     // Store binding token for wallet integration
     if (this.bindingToken) {
-      await fetch('/api/binding/complete', {
-        method: 'PUT',
+      await fetch("/api/binding-complete", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           userId,
@@ -267,7 +272,7 @@ export class AddressBindingFlow {
     if (this.credentialId) {
       WebAuthnClient.storeCredential({
         credentialId: this.credentialId,
-        publicKey: '', // Will be populated from server
+        publicKey: "", // Will be populated from server
         counter: 0,
         createdAt: Date.now(),
       });
@@ -284,16 +289,18 @@ export class AddressBindingFlow {
     walletAddress: string,
     signature: string,
     message?: string
-  ): Promise<{ txHash: string; status: 'pending' | 'verified' }> {
+  ): Promise<{ txHash: string; status: "pending" | "verified" }> {
     if (!this.bindingToken || !this.credentialId) {
-      throw new Error('Binding not started. Please start the binding flow first.');
+      throw new Error(
+        "Binding not started. Please start the binding flow first."
+      );
     }
 
     // Call the backend API to create the on-chain transaction
-    const response = await fetch('/api/binding/complete', {
-      method: 'POST',
+    const response = await fetch("/api/binding-complete", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         userId,
@@ -305,7 +312,7 @@ export class AddressBindingFlow {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to complete binding');
+      throw new Error("Failed to complete binding");
     }
 
     return await response.json();
@@ -315,53 +322,55 @@ export class AddressBindingFlow {
    * Check binding status
    */
   async checkStatus(walletAddress: string): Promise<{
-    status: 'none' | 'pending' | 'verified' | 'revoked';
+    status: "none" | "pending" | "verified" | "revoked";
     credential?: WebAuthnCredentialData;
   }> {
     try {
-      const response = await fetch(`/api/binding/status?address=${encodeURIComponent(walletAddress)}`);
-      
+      const response = await fetch(
+        `/api/binding-status?address=${encodeURIComponent(walletAddress)}`
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to check status');
+        throw new Error("Failed to check status");
       }
 
       const data = await response.json();
-      
-      if (data.success && data.status !== 'none') {
+
+      if (data.success && data.status !== "none") {
         // Check local storage for credential data
         const stored = WebAuthnClient.getStoredCredentials();
-        const credential = stored.find(c => 
-          data.bindingData?.credentialId === c.credentialId
+        const credential = stored.find(
+          (c) => data.bindingData?.credentialId === c.credentialId
         );
-        
+
         return {
           status: data.status,
           credential,
         };
       }
     } catch (error) {
-      console.error('Status check failed:', error);
+      console.error("Status check failed:", error);
     }
 
     // Fallback to local storage check
     const stored = WebAuthnClient.getStoredCredentials();
     if (stored.length > 0) {
       return {
-        status: 'verified',
+        status: "verified",
         credential: stored[0],
       };
     }
-    return { status: 'none' };
+    return { status: "none" };
   }
 
   /**
    * Revoke binding
    */
   async revokeBinding(walletAddress: string): Promise<boolean> {
-    const response = await fetch('/api/binding/revoke', {
-      method: 'POST',
+    const response = await fetch("/api/binding-revoke", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         walletAddress,
@@ -369,7 +378,7 @@ export class AddressBindingFlow {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to revoke binding');
+      throw new Error("Failed to revoke binding");
     }
 
     WebAuthnClient.clearStoredCredentials();

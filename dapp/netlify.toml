@@ -1,5 +1,4 @@
 [functions]
-# Functions at root level, not in dapp
 directory = "netlify/functions"
 
 [dev]
@@ -19,13 +18,33 @@ package = "@netlify/plugin-nextjs"
 
 # API redirects for cleaner URLs
 [[redirects]]
-from = "/api/binding/registration-verification"
+from = "/api/binding-registration-verification"
 to = "/.netlify/functions/binding-registration-verification"
 status = 200
 
 [[redirects]]
-from = "/api/binding/registration-options"
+from = "/api/binding-registration-options"
 to = "/.netlify/functions/binding-registration-options"
+status = 200
+
+[[redirects]]
+from = "/api/binding-complete"
+to = "/.netlify/functions/binding-complete"
+status = 200
+
+[[redirects]]
+from = "/api/binding-authentication-verification"
+to = "/.netlify/functions/binding-authentication-verification"
+status = 200
+
+[[redirects]]
+from = "/api/binding-authentication-options"
+to = "/.netlify/functions/binding-authentication-options"
+status = 200
+
+[[redirects]]
+from = "/api/test"
+to = "/.netlify/functions/test"
 status = 200
 
 # Environment variables (set in Netlify dashboard)

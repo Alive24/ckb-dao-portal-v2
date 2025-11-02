@@ -126,16 +126,9 @@ export const DelegationRecord = mol.table({
   end_block: Uint64Opt,
   revocable: mol.Uint8
 });
-export const WebAuthnCredential = mol.table({
-  credential_id: mol.Bytes,
-  public_key: mol.Bytes,
-  algorithm: mol.Uint32,
-  attestation_format: mol.String,
-  created_at: mol.Uint64
-});
 export const AddressBindingData = mol.table({
   user_lock_hash: mol.Byte32,
-  webauthn_credential: WebAuthnCredential,
+  passkey_data: mol.Bytes,
   binding_proof: mol.Bytes,
   verified_at: mol.Uint64,
   status: mol.Uint8,
@@ -177,6 +170,10 @@ export const DAOConfig = mol.table({
   proposal_duration: mol.Uint64,
   execution_delay: mol.Uint64,
   guardian_set: mol.Byte32Vec
+});
+export const ConnectedTypeID = mol.table({
+  type_id: mol.Byte32,
+  connected_key: mol.Byte32
 });
 
 // Enums for DAO governance
@@ -341,17 +338,9 @@ export interface DelegationRecordLike {
   revocable: ccc.NumLike;
 }
 
-export interface WebAuthnCredentialLike {
-  credential_id: ccc.BytesLike;
-  public_key: ccc.BytesLike;
-  algorithm: ccc.NumLike;
-  attestation_format: string;
-  created_at: ccc.NumLike;
-}
-
 export interface AddressBindingDataLike {
   user_lock_hash: ccc.HexLike;
-  webauthn_credential: WebAuthnCredentialLike;
+  passkey_data: ccc.BytesLike;
   binding_proof: ccc.BytesLike;
   verified_at: ccc.NumLike;
   status: ccc.NumLike;
@@ -397,5 +386,10 @@ export interface DAOConfigLike {
   proposal_duration: ccc.NumLike;
   execution_delay: ccc.NumLike;
   guardian_set: ccc.HexLike[];
+}
+
+export interface ConnectedTypeIDLike {
+  type_id: ccc.HexLike;
+  connected_key: ccc.HexLike;
 }
 

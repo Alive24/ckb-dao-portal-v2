@@ -19,7 +19,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "ssri-ckbdao": ["../packages/ssri-ckbdao/dist"],
+      "ssri-ckbdao/*": ["../packages/ssri-ckbdao/dist/*"],
+      "ssri-ckbdao/types": ["../packages/ssri-ckbdao/dist/generated"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

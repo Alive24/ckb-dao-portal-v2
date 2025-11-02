@@ -608,32 +608,6 @@
     },
     {
       "type": "table",
-      "name": "WebAuthnCredential",
-      "fields": [
-        {
-          "name": "credential_id",
-          "type": "Bytes"
-        },
-        {
-          "name": "public_key",
-          "type": "Bytes"
-        },
-        {
-          "name": "algorithm",
-          "type": "Uint32"
-        },
-        {
-          "name": "attestation_format",
-          "type": "String"
-        },
-        {
-          "name": "created_at",
-          "type": "Uint64"
-        }
-      ]
-    },
-    {
-      "type": "table",
       "name": "AddressBindingData",
       "fields": [
         {
@@ -641,8 +615,8 @@
           "type": "Byte32"
         },
         {
-          "name": "webauthn_credential",
-          "type": "WebAuthnCredential"
+          "name": "passkey_data",
+          "type": "Bytes"
         },
         {
           "name": "binding_proof",
@@ -799,6 +773,20 @@
         {
           "name": "guardian_set",
           "type": "Byte32Vec"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "ConnectedTypeID",
+      "fields": [
+        {
+          "name": "type_id",
+          "type": "Byte32"
+        },
+        {
+          "name": "connected_key",
+          "type": "Byte32"
         }
       ]
     }
